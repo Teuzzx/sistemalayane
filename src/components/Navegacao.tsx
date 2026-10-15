@@ -189,7 +189,7 @@ export function Navegacao({
 
       {/* ---------- Barra lateral (desktop) ---------- */}
       <aside className="nao-imprimir lateral hidden lg:flex">
-        <div className="flex items-center justify-between gap-2 px-3.5 pb-4 pt-5">
+        <div className="flex items-center justify-between gap-2 px-3.5 pb-3 pt-4">
           <Marca />
           <button
             type="button"
@@ -202,7 +202,7 @@ export function Navegacao({
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto overflow-x-hidden px-2.5 pb-4">
+        <nav className="flex-1 overflow-y-auto overflow-x-hidden px-2.5 pb-2">
           <ListaGrupos
             grupos={visiveis}
             itemAtivo={itemAtivo}
@@ -252,10 +252,10 @@ function ListaGrupos({
   contagens?: Record<string, { n: number; tom: "perigo" | "atencao" }>;
 }) {
   return (
-    <ul className="lateral__grupos flex flex-col gap-5">
+    <ul className="lateral__grupos flex flex-col gap-3">
       {grupos.map((grupo) => (
         <li key={grupo.titulo}>
-          <p className="lateral__grupo-rotulo label mb-1.5 px-2.5">
+          <p className="lateral__grupo-rotulo label mb-1 px-2.5">
             {grupo.titulo}
           </p>
           <ul className="flex flex-col gap-0.5">
@@ -315,7 +315,7 @@ function RodapeLateral({
   recolhida?: boolean;
 }) {
   return (
-    <div className="relative border-t border-[var(--vidro-fio)] px-3.5 py-3.5">
+    <div className="relative border-t border-[var(--vidro-fio)] px-3.5 py-3">
       <div className="flex items-center gap-2.5">
         <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white/8 text-[0.6875rem] font-600">
           {iniciais(usuario.nome)}
