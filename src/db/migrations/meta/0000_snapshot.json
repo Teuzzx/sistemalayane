@@ -1,0 +1,2024 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "7150f5ab-1437-4a1d-99e1-cdf2cdb1263a",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "analises_conformidade": {
+      "name": "analises_conformidade",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cliente_id": {
+          "name": "cliente_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "modelo_id": {
+          "name": "modelo_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "titulo": {
+          "name": "titulo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'rascunho'"
+        },
+        "respostas": {
+          "name": "respostas",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'{}'"
+        },
+        "modelo_aplicado": {
+          "name": "modelo_aplicado",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "parecer": {
+          "name": "parecer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "recomendacoes": {
+          "name": "recomendacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "indice_conformidade": {
+          "name": "indice_conformidade",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "emitido_em": {
+          "name": "emitido_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        },
+        "atualizado_em": {
+          "name": "atualizado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        },
+        "criado_por": {
+          "name": "criado_por",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "analises_conformidade_cliente_id_clientes_id_fk": {
+          "name": "analises_conformidade_cliente_id_clientes_id_fk",
+          "tableFrom": "analises_conformidade",
+          "tableTo": "clientes",
+          "columnsFrom": [
+            "cliente_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "analises_conformidade_modelo_id_modelos_conformidade_id_fk": {
+          "name": "analises_conformidade_modelo_id_modelos_conformidade_id_fk",
+          "tableFrom": "analises_conformidade",
+          "tableTo": "modelos_conformidade",
+          "columnsFrom": [
+            "modelo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "analises_conformidade_criado_por_usuarios_id_fk": {
+          "name": "analises_conformidade_criado_por_usuarios_id_fk",
+          "tableFrom": "analises_conformidade",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "criado_por"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "atendimentos": {
+      "name": "atendimentos",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cliente_id": {
+          "name": "cliente_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "demanda_id": {
+          "name": "demanda_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "data": {
+          "name": "data",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'consulta'"
+        },
+        "titulo": {
+          "name": "titulo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "resumo": {
+          "name": "resumo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "proximo_passo": {
+          "name": "proximo_passo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "data_proximo_passo": {
+          "name": "data_proximo_passo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "duracao_min": {
+          "name": "duracao_min",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        },
+        "criado_por": {
+          "name": "criado_por",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "atendimentos_cliente_id_clientes_id_fk": {
+          "name": "atendimentos_cliente_id_clientes_id_fk",
+          "tableFrom": "atendimentos",
+          "tableTo": "clientes",
+          "columnsFrom": [
+            "cliente_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "atendimentos_demanda_id_demandas_id_fk": {
+          "name": "atendimentos_demanda_id_demandas_id_fk",
+          "tableFrom": "atendimentos",
+          "tableTo": "demandas",
+          "columnsFrom": [
+            "demanda_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "atendimentos_criado_por_usuarios_id_fk": {
+          "name": "atendimentos_criado_por_usuarios_id_fk",
+          "tableFrom": "atendimentos",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "criado_por"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "auditoria": {
+      "name": "auditoria",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "usuario_id": {
+          "name": "usuario_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "acao": {
+          "name": "acao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "entidade": {
+          "name": "entidade",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "entidade_id": {
+          "name": "entidade_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "detalhe": {
+          "name": "detalhe",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "auditoria_usuario_id_usuarios_id_fk": {
+          "name": "auditoria_usuario_id_usuarios_id_fk",
+          "tableFrom": "auditoria",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "usuario_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "clientes": {
+      "name": "clientes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nome": {
+          "name": "nome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nome_fantasia": {
+          "name": "nome_fantasia",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "cnpj": {
+          "name": "cnpj",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "cpf": {
+          "name": "cpf",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "setor_publico": {
+          "name": "setor_publico",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "contato_nome": {
+          "name": "contato_nome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "contato_cargo": {
+          "name": "contato_cargo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "contato_email": {
+          "name": "contato_email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "contato_telefone": {
+          "name": "contato_telefone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "whatsapp": {
+          "name": "whatsapp",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "segmento": {
+          "name": "segmento",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "porte": {
+          "name": "porte",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "endereco": {
+          "name": "endereco",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "cidade": {
+          "name": "cidade",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "uf": {
+          "name": "uf",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'potencial'"
+        },
+        "origem": {
+          "name": "origem",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        },
+        "atualizado_em": {
+          "name": "atualizado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        },
+        "criado_por": {
+          "name": "criado_por",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "clientes_criado_por_usuarios_id_fk": {
+          "name": "clientes_criado_por_usuarios_id_fk",
+          "tableFrom": "clientes",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "criado_por"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "configuracoes": {
+      "name": "configuracoes",
+      "columns": {
+        "chave": {
+          "name": "chave",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "valor": {
+          "name": "valor",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "atualizado_em": {
+          "name": "atualizado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "contratos": {
+      "name": "contratos",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cliente_id": {
+          "name": "cliente_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "orcamento_id": {
+          "name": "orcamento_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "demanda_id": {
+          "name": "demanda_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "numero": {
+          "name": "numero",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "titulo": {
+          "name": "titulo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'rascunho'"
+        },
+        "inicio": {
+          "name": "inicio",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fim": {
+          "name": "fim",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "valor_total": {
+          "name": "valor_total",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "forma_pagamento": {
+          "name": "forma_pagamento",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "parcelas": {
+          "name": "parcelas",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        },
+        "intervalo_parcelas_dias": {
+          "name": "intervalo_parcelas_dias",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 30
+        },
+        "escopo": {
+          "name": "escopo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "investimento": {
+          "name": "investimento",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "forma_de_pagamento_texto": {
+          "name": "forma_de_pagamento_texto",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "obrigacoes": {
+          "name": "obrigacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "confidencialidade": {
+          "name": "confidencialidade",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "rescisao": {
+          "name": "rescisao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "assinado_em": {
+          "name": "assinado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        },
+        "atualizado_em": {
+          "name": "atualizado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        },
+        "criado_por": {
+          "name": "criado_por",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "contratos_cliente_id_clientes_id_fk": {
+          "name": "contratos_cliente_id_clientes_id_fk",
+          "tableFrom": "contratos",
+          "tableTo": "clientes",
+          "columnsFrom": [
+            "cliente_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "contratos_orcamento_id_orcamentos_id_fk": {
+          "name": "contratos_orcamento_id_orcamentos_id_fk",
+          "tableFrom": "contratos",
+          "tableTo": "orcamentos",
+          "columnsFrom": [
+            "orcamento_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "contratos_demanda_id_demandas_id_fk": {
+          "name": "contratos_demanda_id_demandas_id_fk",
+          "tableFrom": "contratos",
+          "tableTo": "demandas",
+          "columnsFrom": [
+            "demanda_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "contratos_criado_por_usuarios_id_fk": {
+          "name": "contratos_criado_por_usuarios_id_fk",
+          "tableFrom": "contratos",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "criado_por"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "demandas": {
+      "name": "demandas",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cliente_id": {
+          "name": "cliente_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "titulo": {
+          "name": "titulo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "servico_id": {
+          "name": "servico_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "descricao": {
+          "name": "descricao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'consulta'"
+        },
+        "valor_estimado": {
+          "name": "valor_estimado",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "probabilidade": {
+          "name": "probabilidade",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 10
+        },
+        "prazo_dias": {
+          "name": "prazo_dias",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "data_abertura": {
+          "name": "data_abertura",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "data_fechamento": {
+          "name": "data_fechamento",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "responsavel_id": {
+          "name": "responsavel_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        },
+        "atualizado_em": {
+          "name": "atualizado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        },
+        "criado_por": {
+          "name": "criado_por",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "demandas_cliente_id_clientes_id_fk": {
+          "name": "demandas_cliente_id_clientes_id_fk",
+          "tableFrom": "demandas",
+          "tableTo": "clientes",
+          "columnsFrom": [
+            "cliente_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "demandas_servico_id_servicos_id_fk": {
+          "name": "demandas_servico_id_servicos_id_fk",
+          "tableFrom": "demandas",
+          "tableTo": "servicos",
+          "columnsFrom": [
+            "servico_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "demandas_responsavel_id_usuarios_id_fk": {
+          "name": "demandas_responsavel_id_usuarios_id_fk",
+          "tableFrom": "demandas",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "responsavel_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "demandas_criado_por_usuarios_id_fk": {
+          "name": "demandas_criado_por_usuarios_id_fk",
+          "tableFrom": "demandas",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "criado_por"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "despesas": {
+      "name": "despesas",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descricao": {
+          "name": "descricao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "categoria": {
+          "name": "categoria",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "valor": {
+          "name": "valor",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "data": {
+          "name": "data",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "forma_pagamento": {
+          "name": "forma_pagamento",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'pix'"
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        },
+        "criado_por": {
+          "name": "criado_por",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "despesas_criado_por_usuarios_id_fk": {
+          "name": "despesas_criado_por_usuarios_id_fk",
+          "tableFrom": "despesas",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "criado_por"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "documentos": {
+      "name": "documentos",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cliente_id": {
+          "name": "cliente_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nome": {
+          "name": "nome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "orgao": {
+          "name": "orgao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "numero": {
+          "name": "numero",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "emissao": {
+          "name": "emissao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "validade": {
+          "name": "validade",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "renovacao_dias": {
+          "name": "renovacao_dias",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'valido'"
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        },
+        "criado_por": {
+          "name": "criado_por",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "documentos_cliente_id_clientes_id_fk": {
+          "name": "documentos_cliente_id_clientes_id_fk",
+          "tableFrom": "documentos",
+          "tableTo": "clientes",
+          "columnsFrom": [
+            "cliente_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "documentos_criado_por_usuarios_id_fk": {
+          "name": "documentos_criado_por_usuarios_id_fk",
+          "tableFrom": "documentos",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "criado_por"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "lancamentos": {
+      "name": "lancamentos",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cliente_id": {
+          "name": "cliente_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "contrato_id": {
+          "name": "contrato_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "demanda_id": {
+          "name": "demanda_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "descricao": {
+          "name": "descricao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "valor": {
+          "name": "valor",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "vencimento": {
+          "name": "vencimento",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'pendente'"
+        },
+        "forma_pagamento": {
+          "name": "forma_pagamento",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "pago_em": {
+          "name": "pago_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "valor_recebido": {
+          "name": "valor_recebido",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "numero": {
+          "name": "numero",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        },
+        "criado_por": {
+          "name": "criado_por",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "lancamentos_cliente_id_clientes_id_fk": {
+          "name": "lancamentos_cliente_id_clientes_id_fk",
+          "tableFrom": "lancamentos",
+          "tableTo": "clientes",
+          "columnsFrom": [
+            "cliente_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "lancamentos_contrato_id_contratos_id_fk": {
+          "name": "lancamentos_contrato_id_contratos_id_fk",
+          "tableFrom": "lancamentos",
+          "tableTo": "contratos",
+          "columnsFrom": [
+            "contrato_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "lancamentos_demanda_id_demandas_id_fk": {
+          "name": "lancamentos_demanda_id_demandas_id_fk",
+          "tableFrom": "lancamentos",
+          "tableTo": "demandas",
+          "columnsFrom": [
+            "demanda_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "lancamentos_criado_por_usuarios_id_fk": {
+          "name": "lancamentos_criado_por_usuarios_id_fk",
+          "tableFrom": "lancamentos",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "criado_por"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "modelos_conformidade": {
+      "name": "modelos_conformidade",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nome": {
+          "name": "nome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descricao": {
+          "name": "descricao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "versao": {
+          "name": "versao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'1.0'"
+        },
+        "modelo": {
+          "name": "modelo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ativo": {
+          "name": "ativo",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        },
+        "atualizado_em": {
+          "name": "atualizado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        },
+        "criado_por": {
+          "name": "criado_por",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "modelos_conformidade_criado_por_usuarios_id_fk": {
+          "name": "modelos_conformidade_criado_por_usuarios_id_fk",
+          "tableFrom": "modelos_conformidade",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "criado_por"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "orcamentos": {
+      "name": "orcamentos",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cliente_id": {
+          "name": "cliente_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "demanda_id": {
+          "name": "demanda_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "numero": {
+          "name": "numero",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "titulo": {
+          "name": "titulo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'rascunho'"
+        },
+        "itens": {
+          "name": "itens",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "subtotal": {
+          "name": "subtotal",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "desconto_valor": {
+          "name": "desconto_valor",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "desconto_percentual": {
+          "name": "desconto_percentual",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "total": {
+          "name": "total",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "condicao_pagamento": {
+          "name": "condicao_pagamento",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "prazo_entrega": {
+          "name": "prazo_entrega",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "validade_dias": {
+          "name": "validade_dias",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 15
+        },
+        "valido_ate": {
+          "name": "valido_ate",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "enviado_em": {
+          "name": "enviado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "aprovado_em": {
+          "name": "aprovado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        },
+        "atualizado_em": {
+          "name": "atualizado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        },
+        "criado_por": {
+          "name": "criado_por",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "orcamentos_cliente_id_clientes_id_fk": {
+          "name": "orcamentos_cliente_id_clientes_id_fk",
+          "tableFrom": "orcamentos",
+          "tableTo": "clientes",
+          "columnsFrom": [
+            "cliente_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "orcamentos_demanda_id_demandas_id_fk": {
+          "name": "orcamentos_demanda_id_demandas_id_fk",
+          "tableFrom": "orcamentos",
+          "tableTo": "demandas",
+          "columnsFrom": [
+            "demanda_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "orcamentos_criado_por_usuarios_id_fk": {
+          "name": "orcamentos_criado_por_usuarios_id_fk",
+          "tableFrom": "orcamentos",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "criado_por"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "pagamentos": {
+      "name": "pagamentos",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "lancamento_id": {
+          "name": "lancamento_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cliente_id": {
+          "name": "cliente_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "data": {
+          "name": "data",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "valor": {
+          "name": "valor",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "forma_pagamento": {
+          "name": "forma_pagamento",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'pix'"
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'pagamento'"
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        },
+        "criado_por": {
+          "name": "criado_por",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "pagamentos_lancamento_id_lancamentos_id_fk": {
+          "name": "pagamentos_lancamento_id_lancamentos_id_fk",
+          "tableFrom": "pagamentos",
+          "tableTo": "lancamentos",
+          "columnsFrom": [
+            "lancamento_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pagamentos_cliente_id_clientes_id_fk": {
+          "name": "pagamentos_cliente_id_clientes_id_fk",
+          "tableFrom": "pagamentos",
+          "tableTo": "clientes",
+          "columnsFrom": [
+            "cliente_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pagamentos_criado_por_usuarios_id_fk": {
+          "name": "pagamentos_criado_por_usuarios_id_fk",
+          "tableFrom": "pagamentos",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "criado_por"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "servicos": {
+      "name": "servicos",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nome": {
+          "name": "nome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descricao": {
+          "name": "descricao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "preco_padrao": {
+          "name": "preco_padrao",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "unidade": {
+          "name": "unidade",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'projeto'"
+        },
+        "ativo": {
+          "name": "ativo",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "sessoes": {
+      "name": "sessoes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "usuario_id": {
+          "name": "usuario_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expira_em": {
+          "name": "expira_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        }
+      },
+      "indexes": {
+        "sessoes_token_idx": {
+          "name": "sessoes_token_idx",
+          "columns": [
+            "id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "sessoes_usuario_id_usuarios_id_fk": {
+          "name": "sessoes_usuario_id_usuarios_id_fk",
+          "tableFrom": "sessoes",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "usuario_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "usuarios": {
+      "name": "usuarios",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nome": {
+          "name": "nome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "senha_hash": {
+          "name": "senha_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "papel": {
+          "name": "papel",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'assistente'"
+        },
+        "cargo": {
+          "name": "cargo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "ativo": {
+          "name": "ativo",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "ultimo_acesso_em": {
+          "name": "ultimo_acesso_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))"
+        }
+      },
+      "indexes": {
+        "usuarios_email_idx": {
+          "name": "usuarios_email_idx",
+          "columns": [
+            "email"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}

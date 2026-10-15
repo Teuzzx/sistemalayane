@@ -1,0 +1,452 @@
+@import "tailwindcss";
+
+/* ==================================================================
+   Layane Marques — Sistema Interno
+   Mesma identidade do site institucional (DESIGN_DNA.md), adaptada
+   para uma aplicação de operação: o fio de 1px vira o separador
+   principal, o numeral vira a linguagem das listas (nada de grid de
+   cards), e a paleta de papel/grafite/verde-oliva continua igual.
+   ================================================================== */
+
+@theme {
+  /* --- Papel ---------------------------------------------------- */
+  --color-paper: #f4efe5;
+  --color-surface: #fbf9f4;
+  --color-surface-2: #f7f3ea;
+
+  /* --- Marca ---------------------------------------------------- */
+  --color-deep: #3a472d;
+  --color-deep-2: #2e3925;
+  --color-deep-3: #46543a;
+  --color-accent: #5d703f;
+  --color-accent-soft: #eef0e5;
+  --color-mineral: #7a6454;
+  --color-mineral-soft: #bfa084;
+
+  /* --- Tinta ---------------------------------------------------- */
+  --color-ink: #1c2216;
+  --color-muted: #575e52;
+  --color-faint: #8a9082;
+  --color-on-deep: #fbf8f1;
+
+  /* --- Fios ----------------------------------------------------- */
+  --color-line: #e0d9cb;
+  --color-line-strong: #cfc5b1;
+  --color-line-deep: rgba(251, 248, 241, 0.18);
+
+  /* --- Semânticas de operação ----------------------------------
+     Derivadas da paleta de terra, nunca neon. Hue earthy, saturação
+     baixa, contraste AA em fundo papel.                              */
+  --color-ok: #4a6b3c; /* conforme / pago */
+  --color-ok-bg: #eaf0e3;
+  --color-warn: #8a6320; /* atenção / a vencer */
+  --color-warn-bg: #f7efdc;
+  --color-danger: #9a4530; /* vencido / não conforme */
+  --color-danger-bg: #f7e9e3;
+  --color-info: #3f5a6b; /* informativo / em andamento */
+  --color-info-bg: #e7eef2;
+  --color-mute: #6f756a;
+  --color-mute-bg: #eeece5;
+
+  /* --- Tipografia ----------------------------------------------- */
+  --font-sans: var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
+  --font-accent: var(--font-surgena), var(--font-barlow), serif;
+
+  /* --- Raio ----------------------------------------------------- */
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 26px;
+
+  /* --- Movimento ------------------------------------------------ */
+  --ease-sistema: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* A fonte de acento é um TTF local (mesma do site). */
+@font-face {
+  font-family: "Surgena";
+  src: url("/fonts/surgena-600.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ==================================================================
+   Base
+   ================================================================== */
+
+* {
+  border-color: var(--color-line);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Fio hairline de 1px é o separador primário do sistema. */
+::selection {
+  background: var(--color-deep);
+  color: var(--color-on-deep);
+}
+
+/* Foco visível: 2px, conforme DNA. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Números de dado sempre tabulares — coluna de dinheiro não pode dançar. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Acento tipográfico (Surgena) — mesma regra do site: 1–2 palavras. */
+.font-accent {
+  font-family: var(--font-accent);
+  font-weight: 600;
+  font-size: 1.04em;
+  line-height: 0.98;
+}
+
+/* Label / eyebrow — o sistema é de leitura densa, então o label é o
+   substituto do ícone: é ele que nomeia a coluna e a seção. */
+.label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+}
+
+/* Numeral de índice — a linguagem das listas deste projeto. */
+.index-num {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-mineral);
+  letter-spacing: 0.04em;
+}
+
+/* ==================================================================
+   Controles
+   ================================================================== */
+
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+.field {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.6rem 0.8rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-xs);
+  transition: border-color 160ms var(--ease-sistema),
+    box-shadow 160ms var(--ease-sistema);
+}
+
+.field:hover {
+  border-color: var(--color-faint);
+}
+
+.field:focus,
+.field:focus-visible {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 16%, transparent);
+}
+
+.field::placeholder {
+  color: var(--color-faint);
+}
+
+.field[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}
+
+textarea.field {
+  min-height: 96px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+select.field {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--color-muted) 50%),
+    linear-gradient(135deg, var(--color-muted) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 2.25rem;
+}
+
+/* Botões — pílula, sempre. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 40px;
+  padding: 0 1.1rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 160ms var(--ease-sistema),
+    border-color 160ms var(--ease-sistema), color 160ms var(--ease-sistema);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--color-deep);
+  color: var(--color-on-deep);
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-accent);
+}
+
+.btn-secundario {
+  background: var(--color-surface);
+  color: var(--color-deep);
+  border-color: var(--color-line-strong);
+}
+.btn-secundario:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+.btn-fantasma {
+  background: transparent;
+  color: var(--color-muted);
+}
+.btn-fantasma:hover:not(:disabled) {
+  background: var(--color-surface-2);
+  color: var(--color-ink);
+}
+
+.btn-perigo {
+  background: transparent;
+  color: var(--color-danger);
+  border-color: color-mix(in srgb, var(--color-danger) 35%, transparent);
+}
+.btn-perigo:hover:not(:disabled) {
+  background: var(--color-danger-bg);
+}
+
+/* Setas de CTA deslizam 4px no hover — microinteração com função. */
+.btn .seta {
+  transition: transform 160ms var(--ease-sistema);
+}
+.btn:hover .seta {
+  transform: translateX(4px);
+}
+
+/* ==================================================================
+   Tabela — o fio é o separador, nunca o card
+   ================================================================== */
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabela thead th {
+  padding: 0 0.75rem 0.55rem;
+  text-align: left;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+  white-space: nowrap;
+  border-bottom: 1px solid var(--color-line-strong);
+}
+
+.tabela thead th:first-child {
+  padding-left: 0;
+}
+.tabela thead th:last-child {
+  padding-right: 0;
+}
+
+.tabela tbody tr {
+  border-bottom: 1px solid var(--color-line);
+  transition: background-color 160ms var(--ease-sistema);
+}
+
+.tabela tbody tr:hover {
+  background: var(--color-surface-2);
+}
+
+.tabela tbody td {
+  padding: 0.8rem 0.75rem;
+  vertical-align: baseline;
+}
+
+.tabela tbody td:first-child {
+  padding-left: 0;
+}
+.tabela tbody td:last-child {
+  padding-right: 0;
+}
+
+.tabela .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.tabela-compacta tbody td {
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
+}
+
+/* ==================================================================
+   Estrutura
+   ================================================================== */
+
+/* Linha de dado: rótulo à esquerda, valor à direita, fio embaixo.
+   O padrão de tabela deste projeto — o fio substitui o card. */
+.linha-dado {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--color-line);
+}
+.linha-dado:last-child {
+  border-bottom: 0;
+}
+
+/* Barra de rolagem discreta — a tela tem listas longas. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-strong) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--color-line-strong);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ==================================================================
+   Impressão — contratos, orçamentos, relatórios de conformidade
+   O documento sai limpo: sem shell, sem navegação, sem cor de fundo.
+   ================================================================== */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 18mm 16mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+  }
+
+  .nao-imprimir {
+    display: none !important;
+  }
+
+  .doc-impressao {
+    box-shadow: none !important;
+    border: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .doc-impressao * {
+    color: #000 !important;
+    box-shadow: none !important;
+  }
+
+  .doc-impressao .doc-cabecalho {
+    border-bottom: 2px solid #000 !important;
+  }
+
+  .doc-impressao table {
+    page-break-inside: auto;
+  }
+
+  .doc-impressao tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  .doc-impressao h1,
+  .doc-impressao h2,
+  .doc-impressao h3 {
+    page-break-after: avoid;
+  }
+
+  .doc-quebra {
+    page-break-before: always;
+  }
+}
+
+/* ==================================================================
+   Movimento
+   ================================================================== */
+
+@keyframes surgir {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animar {
+  animation: surgir 320ms var(--ease-sistema) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
