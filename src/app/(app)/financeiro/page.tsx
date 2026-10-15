@@ -229,11 +229,10 @@ export default async function PaginaFinanceiro({
         <TabelaBaixas lancamentos={lancamentos} mostrarBaixa={Boolean(baixa)} />
       )}
 
-      <p className="max-w-[70ch] border-t border-line pt-4 text-[0.8125rem] text-faint">
+      <p className="max-w-[70ch] text-[0.8125rem] leading-relaxed text-faint">
         Desconto nunca apaga o valor cobrado: entra como movimentação negativa no
         histórico. Assim o sistema mostra o que foi faturado e o que entrou de
         verdade — os dois números, sem um esconder o outro.
-        {mascararDocumento("") === "—" ? "" : ""}
       </p>
     </div>
   );

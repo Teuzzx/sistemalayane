@@ -1,68 +1,84 @@
 @import "tailwindcss";
 
 /* ==================================================================
-   Layane Marques — Sistema Interno
-   Mesma identidade do site institucional (DESIGN_DNA.md), adaptada
-   para uma aplicação de operação: o fio de 1px vira o separador
-   principal, o numeral vira a linguagem das listas (nada de grid de
-   cards), e a paleta de papel/grafite/verde-oliva continua igual.
+   LAYANE MARQUES — SISTEMA INTERNO
+   Vidro escuro sobre território cinematográfico.
+
+   Mesma identidade do site (DESIGN_DNA): verde-oliva da logo, bege
+   mineral, tipografia Barlow Semi Condensed + acento Surgena. O que muda
+   aqui é o SUPORTE: em vez de papel bege, um fundo de vídeo revedido que
+   dá profundidade, e vidro no lugar do cartão.
+
+   Regra do projeto, e é séria: vidro NÃO é decoração. Ele marca
+   hierarquia — o que flutua acima do fundo é o que a pessoa opera.
+   Onde a leitura de dado densa manda (tabelas, campos, texto corrido),
+   a superfície é sólida. Ver §VIDRO.
    ================================================================== */
 
 @theme {
-  /* --- Papel ---------------------------------------------------- */
-  --color-paper: #f4efe5;
-  --color-surface: #fbf9f4;
-  --color-surface-2: #f7f3ea;
+  /* --- Superfícies base --------------------------------------- */
+  --color-vidro-fundo: #14180f;
+  --color-vidro-fundo-2: #1c2216;
+  --color-vidro-fundo-3: #26301f;
 
-  /* --- Marca ---------------------------------------------------- */
+  /* --- Marca (vinda da logo, mantida) --------------------------- */
   --color-deep: #3a472d;
-  --color-deep-2: #2e3925;
-  --color-deep-3: #46543a;
-  --color-accent: #5d703f;
-  --color-accent-soft: #eef0e5;
-  --color-mineral: #7a6454;
-  --color-mineral-soft: #bfa084;
+  --color-accent: #7d9461;
+  --color-accent-vivo: #9cb87a;
+  --color-mineral: #bfa084;
+  --color-mineral-2: #cbb195;
+  --color-bege: #d8c6ac;
 
-  /* --- Tinta ---------------------------------------------------- */
-  --color-ink: #1c2216;
-  --color-muted: #575e52;
-  --color-faint: #8a9082;
-  --color-on-deep: #fbf8f1;
+  /* --- Tinta sobre vidro ---------------------------------------- */
+  --color-tinta: #f4f1e8;
+  --color-tinta-2: rgba(244, 241, 232, 0.72);
+  --color-tinta-3: rgba(244, 241, 232, 0.46);
+  --color-tinta-4: rgba(244, 241, 232, 0.28);
 
-  /* --- Fios ----------------------------------------------------- */
-  --color-line: #e0d9cb;
-  --color-line-strong: #cfc5b1;
-  --color-line-deep: rgba(251, 248, 241, 0.18);
+  /* --- Vidro (os quatro níveis) --------------------------------- */
+  --vidro-alta: rgba(20, 24, 15, 0.78);
+  --vidro-media: rgba(24, 29, 19, 0.56);
+  --vidro-baixa: rgba(244, 241, 232, 0.045);
+  --vidro-fio: rgba(244, 241, 232, 0.11);
+  --vidro-fio-forte: rgba(244, 241, 232, 0.18);
+  --vidro-brilho: rgba(244, 241, 232, 0.14);
 
-  /* --- Semânticas de operação ----------------------------------
-     Derivadas da paleta de terra, nunca neon. Hue earthy, saturação
-     baixa, contraste AA em fundo papel.                              */
-  --color-ok: #4a6b3c; /* conforme / pago */
-  --color-ok-bg: #eaf0e3;
-  --color-warn: #8a6320; /* atenção / a vencer */
-  --color-warn-bg: #f7efdc;
-  --color-danger: #9a4530; /* vencido / não conforme */
-  --color-danger-bg: #f7e9e3;
-  --color-info: #3f5a6b; /* informativo / em andamento */
-  --color-info-bg: #e7eef2;
-  --color-mute: #6f756a;
-  --color-mute-bg: #eeece5;
+  /* --- Semântica ---------------------------------------------- */
+  --color-ok: #86b36a;
+  --color-ok-fundo: rgba(134, 179, 106, 0.14);
+  --color-warn: #d9a441;
+  --color-warn-fundo: rgba(217, 164, 65, 0.14);
+  --color-perigo: #dd7f63;
+  --color-perigo-fundo: rgba(221, 127, 99, 0.15);
+  --color-info: #7fa8c4;
+  --color-info-fundo: rgba(127, 168, 196, 0.14);
+  --color-neutro: rgba(244, 241, 232, 0.5);
+  --color-neutro-fundo: rgba(244, 241, 232, 0.07);
 
-  /* --- Tipografia ----------------------------------------------- */
+  /* --- Tipografia ---------------------------------------------- */
   --font-sans: var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
   --font-accent: var(--font-surgena), var(--font-barlow), serif;
 
   /* --- Raio ----------------------------------------------------- */
   --radius-xs: 8px;
   --radius-sm: 12px;
-  --radius-md: 18px;
-  --radius-lg: 26px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-painel: 18px;
 
   /* --- Movimento ------------------------------------------------ */
-  --ease-sistema: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-rapida: cubic-bezier(0.32, 0.72, 0, 1);
+  --dur-1: 160ms;
+  --dur-2: 240ms;
+  --dur-3: 320ms;
+
+  /* --- Sombra (sempre com deslocamento + blur) ------------------ */
+  --sombra-1: 0 1px 2px rgba(0, 0, 0, 0.32), 0 2px 8px rgba(0, 0, 0, 0.22);
+  --sombra-2: 0 2px 6px rgba(0, 0, 0, 0.34), 0 10px 28px rgba(0, 0, 0, 0.3);
+  --sombra-3: 0 4px 12px rgba(0, 0, 0, 0.4), 0 22px 56px rgba(0, 0, 0, 0.42);
 }
 
-/* A fonte de acento é um TTF local (mesma do site). */
 @font-face {
   font-family: "Surgena";
   src: url("/fonts/surgena-600.ttf") format("truetype");
@@ -72,46 +88,175 @@
 }
 
 /* ==================================================================
-   Base
+   ALIAS — nomes da v1 (papel claro) apontando para a paleta escura.
+
+   As páginas e os formulários já escrevem `text-muted`, `border-line`,
+   `bg-danger-bg`. Remapear por baixo em vez de reescrever 40 arquivos é
+   a diferença entre uma troca de direção e uma caça ao pixel.
+   ================================================================== */
+
+@theme {
+  --color-ink: #f4f1e8;
+  --color-muted: rgba(244, 241, 232, 0.72);
+  --color-faint: rgba(244, 241, 232, 0.46);
+  --color-on-deep: #f4f1e8;
+
+  --color-line: rgba(244, 241, 232, 0.11);
+  --color-line-strong: rgba(244, 241, 232, 0.2);
+
+  --color-surface: rgba(244, 241, 232, 0.045);
+  --color-surface-2: rgba(244, 241, 232, 0.07);
+
+  --color-ok: #86b36a;
+  --color-ok-bg: rgba(134, 179, 106, 0.14);
+  --color-warn: #d9a441;
+  --color-warn-bg: rgba(217, 164, 65, 0.14);
+  --color-danger: #dd7f63;
+  --color-danger-bg: rgba(221, 127, 99, 0.15);
+  --color-info: #7fa8c4;
+  --color-info-bg: rgba(127, 168, 196, 0.14);
+  --color-mute: rgba(244, 241, 232, 0.55);
+  --color-mute-bg: rgba(244, 241, 232, 0.07);
+
+  --color-accent-soft: rgba(125, 148, 97, 0.16);
+  --color-accent: #7d9461;
+  --color-deep: #3a472d;
+  --color-mineral: #bfa084;
+  --color-mineral-soft: #cbb195;
+}
+
+/* ==================================================================
+   FUNDO — gradiente base + vídeo revedido + véu
+   ================================================================== */
+
+.fundo {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* Camada 1: nunca existe flash branco antes do vídeo decodificar. */
+  background:
+    radial-gradient(
+      120% 90% at 18% 8%,
+      #2b3520 0%,
+      #1d2417 42%,
+      #12160e 100%
+    ),
+    linear-gradient(160deg, #222b19 0%, #14180f 100%);
+}
+
+.fundo__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 62%;
+
+  /* REVEIR DO ARQUIVO ORIGINAL.
+     O vídeo de origem é verde saturado + céu azul — repertório que a
+     marca bane explicitamente. O filtro converte "foto de paisagem" em
+     "leitura de território": saturação baixa e um desvio de matiz que
+     puxa o verde para o oliva da logo, com blur suficiente para virar
+     névoa em vez de cena. O movimento continua — é ele que dá vida
+     ao vidro. */
+  filter: saturate(0.32) contrast(0.86) brightness(0.92) blur(26px)
+    sepia(0.32) hue-rotate(-16deg);
+  transform: scale(1.1);
+  opacity: 0.46;
+  will-change: transform;
+}
+
+/* Véu de cor — tira o resto do verde/azul e joga o oliva da marca.
+   `multiply` tinge sem apagar; quem protege a legibilidade é a camada
+   de baixo, em modo normal. */
+.fundo__veu {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      110% 80% at 10% 0%,
+      rgba(125, 148, 97, 0.42) 0%,
+      transparent 62%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(58, 71, 45, 0.5) 0%,
+      rgba(42, 52, 33, 0.38) 48%,
+      rgba(24, 30, 19, 0.62) 100%
+    );
+  mix-blend-mode: multiply;
+}
+
+/* Legibilidade. Entra por cima, em modo normal: escurece o bastante para
+   o texto de 13px passar de 4.5:1 sem matar o movimento. */
+.fundo__vinheta {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      135% 105% at 50% 38%,
+      transparent 26%,
+      rgba(10, 13, 8, 0.52) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(12, 16, 10, 0.34) 0%,
+      transparent 22%,
+      transparent 74%,
+      rgba(12, 16, 10, 0.42) 100%
+    );
+}
+
+/* Com motion-reduce, o vídeo some e o gradiente base fica. */
+@media (prefers-reduced-motion: reduce) {
+  .fundo__video {
+    display: none;
+  }
+}
+
+/* ==================================================================
+   BASE
    ================================================================== */
 
 * {
-  border-color: var(--color-line);
+  border-color: var(--vidro-fio);
 }
 
 html {
   -webkit-text-size-adjust: 100%;
+  color-scheme: dark;
 }
 
 body {
-  background: var(--color-paper);
-  color: var(--color-ink);
+  min-height: 100dvh;
+  color: var(--color-tinta);
   font-family: var(--font-sans);
   font-size: 1rem;
   line-height: 1.6;
+  background: transparent;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-/* Fio hairline de 1px é o separador primário do sistema. */
 ::selection {
-  background: var(--color-deep);
-  color: var(--color-on-deep);
+  background: var(--color-accent);
+  color: #10140b;
 }
 
-/* Foco visível: 2px, conforme DNA. */
 :focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-accent-vivo);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
-/* Números de dado sempre tabulares — coluna de dinheiro não pode dançar. */
 .tnum {
   font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
 }
 
-/* Acento tipográfico (Surgena) — mesma regra do site: 1–2 palavras. */
+/* Acento tipográfico — 1–2 palavras dentro de um título. */
 .font-accent {
   font-family: var(--font-accent);
   font-weight: 600;
@@ -119,27 +264,317 @@ body {
   line-height: 0.98;
 }
 
-/* Label / eyebrow — o sistema é de leitura densa, então o label é o
-   substituto do ícone: é ele que nomeia a coluna e a seção. */
+/* Label: nomeia dado e coluna. Não é enfeite acima de título. */
 .label {
   font-size: 0.6875rem;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--color-faint);
-}
-
-/* Numeral de índice — a linguagem das listas deste projeto. */
-.index-num {
-  font-size: 0.8125rem;
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-  color: var(--color-mineral);
-  letter-spacing: 0.04em;
+  color: var(--color-tinta-3);
 }
 
 /* ==================================================================
-   Controles
+   §VIDRO — o sistema de superfície
+   ------------------------------------------------------------------
+   Três decisões, e vale a pena ler antes de mexer:
+
+   1. VIDRO = hierarquia. Flutua = é o que a pessoa opera (sidebar,
+      painéis de número, popover, modal). É onde o efeito entra.
+
+   2. SÓLIDO = dado. Tabela densa, campo de formulário, texto corrido
+      e documento impresso ficam em superfície opaca. Não é esquecimento
+      — é a decisão que mantém a leitura em dia de primeira hora.
+
+   3. Reflexo. Todo vidro tem um realce interno na borda superior e uma
+      linha especular. É o que faz parecer vidro em vez de PNG com
+      blur. Sombra sempre com deslocamento — sombra colorida sem deslocar
+      é decoração, não profundidade.
+   ================================================================== */
+
+.vidro {
+  position: relative;
+  background: var(--vidro-baixa);
+  backdrop-filter: blur(22px) saturate(1.5);
+  -webkit-backdrop-filter: blur(22px) saturate(1.5);
+  border: 1px solid var(--vidro-fio);
+  border-radius: var(--radius-painel);
+  box-shadow:
+    var(--sombra-2),
+    inset 0 1px 0 0 var(--vidro-brilho);
+}
+
+/* Reflexo especular — só o topo, como luz ambiente numa borda de vidro. */
+.vidro::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0) 28%
+  );
+}
+
+/* Painel padrão da aplicação. */
+.painel {
+  position: relative;
+  background: var(--vidro-baixa);
+  backdrop-filter: blur(20px) saturate(1.45);
+  -webkit-backdrop-filter: blur(20px) saturate(1.45);
+  border: 1px solid var(--vidro-fio);
+  border-radius: var(--radius-painel);
+  box-shadow:
+    var(--sombra-2),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Superfície SÓLIDA — dado denso, campo de texto, documento. */
+.solido {
+  background: rgba(15, 19, 11, 0.82);
+  border: 1px solid var(--vidro-fio);
+  border-radius: var(--radius-painel);
+  backdrop-filter: blur(24px) saturate(1.2);
+  -webkit-backdrop-filter: blur(24px) saturate(1.2);
+}
+
+/* ==================================================================
+   BARRA LATERAL
+   ================================================================== */
+
+/*
+ * Colapsar a barra anima DUAS propriedades de layout (`width` do aside e
+ * `padding-left` do conteúdo) — dois passes, e a画面 "engasga" em telas
+ * grandes. O grid resolve: a coluna lateral é a única coisa que muda,
+ * num passe só. A barra continua `position: fixed` (fora do fluxo); o
+ * grid reserva o espaço dela.
+ */
+.app {
+  --lateral-w: 264px;
+  display: grid;
+  grid-template-columns: var(--lateral-w) minmax(0, 1fr);
+  min-height: 100dvh;
+  transition: grid-template-columns var(--dur-3) var(--ease);
+}
+
+html[data-recolhida="true"] .app {
+  --lateral-w: 76px;
+}
+
+/* Abaixo de lg a barra vira gaveta: o conteúdo não cede espaço para ela.
+   O seletor precisa repetir a especificidade de `html[data-recolhida]`
+   acima — sem isso, quem estivesse recolhido levaria 76px de padding no
+   celular. */
+@media (max-width: 1023px) {
+  .app,
+  html[data-recolhida="true"] .app {
+    --lateral-w: 0px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lateral {
+    display: none;
+  }
+
+  .conteudo {
+    grid-column: 1;
+  }
+
+  /* A dica flutuante é posicionada fora da barra e só faz sentido no
+     desktop recolhido. No mobile ela estourava a largura e criava barra
+     de rolagem horizontal na gaveta. */
+  .lateral__dica {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lateral {
+    display: flex;
+  }
+}
+
+/* O conteúdo acompanha a largura da barra sem transição própria: quem
+   anima é a coluna do grid, em um passe só.
+
+   `position: relative` + `z-index: 1` NÃO é decoração: sem isso o fundo
+   fixo (que é `position: fixed; z-index: 0`) entra na pilha de pintura
+   depois do conteúdo estático e cobre todo texto que não esteja dentro de
+   um painel posicionado. O título da página sumia por causa disso. */
+.conteudo {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  /* `grid-column: 2` explícito, não implícito: os dois filhos da navegação
+     são `position: fixed` (fora do fluxo do grid), então o `<main>` vira o
+     PRIMEIRO item em fluxo e cairia na coluna de 76px. */
+  grid-column: 2;
+}
+
+/* `display` é controlado aqui, e não pela classe `hidden` do Tailwind:
+   como este arquivo vem DEPOIS do `@import "tailwindcss"`, um
+   `display: flex` declarado aqui ganharia da utility e a barra fixa
+   apareceria no celular, empurrando o conteúdo para fora da tela. O
+   breakpoint do Tailwind é `lg` = 1024px. */
+.lateral {
+  display: none;
+  position: fixed;
+  inset-block: 0;
+  left: 0;
+  z-index: 40;
+  flex-direction: column;
+  width: var(--lateral-w);
+  background: linear-gradient(
+    180deg,
+    rgba(22, 27, 17, 0.76) 0%,
+    rgba(17, 21, 13, 0.7) 100%
+  );
+  backdrop-filter: blur(30px) saturate(1.6);
+  -webkit-backdrop-filter: blur(30px) saturate(1.6);
+  border-right: 1px solid var(--vidro-fio);
+  box-shadow:
+    1px 0 0 0 rgba(255, 255, 255, 0.05) inset,
+    18px 0 48px -24px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+}
+
+.lateral__item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.62rem 0.8rem;
+  border-radius: var(--radius-xs);
+  color: var(--color-tinta-2);
+  font-size: 0.875rem;
+  text-align: left;
+  white-space: nowrap;
+  position: relative;
+  transition:
+    background-color var(--dur-1) var(--ease),
+    color var(--dur-1) var(--ease),
+    transform var(--dur-1) var(--ease);
+}
+
+.lateral__item:hover {
+  background: rgba(244, 241, 232, 0.06);
+  color: var(--color-tinta);
+}
+
+.lateral__item:active {
+  transform: scale(0.985);
+}
+
+.lateral__item[aria-current="page"] {
+  background: linear-gradient(
+    90deg,
+    rgba(125, 148, 97, 0.26) 0%,
+    rgba(125, 148, 97, 0.05) 100%
+  );
+  color: var(--color-tinta);
+}
+
+/* Marcador do item ativo: uma régua fina na borda, não um bloco. */
+.lateral__item[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 1.3rem;
+  border-radius: 0 2px 2px 0;
+  background: var(--color-accent-vivo);
+  box-shadow: 0 0 10px rgba(156, 184, 122, 0.55);
+}
+
+/* Binário — o texto some por opacidade, não por display, para poder
+   animar. No recolhido, `visibility: hidden` tira o rótulo do leitor de
+   tela e do Tab; senão a pessoa navega por itens que não vê. */
+.lateral__rotulo {
+  overflow: hidden;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity var(--dur-2) var(--ease),
+    transform var(--dur-3) var(--ease);
+  max-width: 14rem;
+}
+
+html[data-recolhida="true"] .lateral__rotulo {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-6px);
+}
+
+html[data-recolhida="true"] .lateral__item {
+  justify-content: center;
+  padding-inline: 0;
+}
+
+html[data-recolhida="true"] .lateral__item[aria-current="page"]::before {
+  left: 0.45rem;
+}
+
+/* Recolhido, o badge sai — a contagem aparece na dica flutuante. */
+html[data-recolhida="true"] .lateral__contagem {
+  display: none;
+}
+
+/* Recolhido, o rótulo do grupo some: sem isso sobraria um `gap-5`
+   inteiro de espaço morto entre listas que já se distinguem pela
+   posição. A separação continua existindo, menor. */
+html[data-recolhida="true"] .lateral__grupos {
+  gap: 0.5rem;
+}
+
+html[data-recolhida="true"] .lateral__grupo-rotulo {
+  display: none;
+}
+
+/* A barra fixa só existe a partir de lg. A media query vem DEPOIS do
+   bloco base de propósito: neste arquivo a regra base ganha da utility
+   `hidden` do Tailwind (o `@import` vem antes), então|display` precisa
+   ser decidido aqui, e o override por breakpoint precisa vir depois. */
+@media (min-width: 1024px) {
+  .lateral {
+    display: flex;
+  }
+}
+
+/* Tooltip — o item continua nomeado quando o rótulo some. */
+.lateral__dica {
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translate(0, -50%);
+  padding: 0.28rem 0.58rem;
+  border-radius: var(--radius-xs);
+  background: rgba(28, 34, 22, 0.94);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--vidro-fio-forte);
+  box-shadow: var(--sombra-2);
+  color: var(--color-tinta);
+  font-size: 0.75rem;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 60;
+  transition:
+    opacity var(--dur-1) var(--ease),
+    transform var(--dur-1) var(--ease);
+}
+
+html[data-recolhida="true"] .lateral__item:hover .lateral__dica,
+html[data-recolhida="true"] .lateral__item:focus-visible .lateral__dica {
+  opacity: 1;
+}
+
+/* ==================================================================
+   CONTROLES
    ================================================================== */
 
 input,
@@ -149,168 +584,201 @@ select {
   color: inherit;
 }
 
+/* Campo SÓLIDO — dado entra aqui, não em vidro. */
 .field {
   width: 100%;
-  min-height: 44px;
-  padding: 0.6rem 0.8rem;
-  background: var(--color-surface);
-  border: 1px solid var(--color-line-strong);
+  min-height: 42px;
+  padding: 0.55rem 0.8rem;
+  color: var(--color-tinta);
+  background: rgba(10, 13, 8, 0.62);
+  border: 1px solid var(--vidro-fio);
   border-radius: var(--radius-xs);
-  transition: border-color 160ms var(--ease-sistema),
-    box-shadow 160ms var(--ease-sistema);
+  transition:
+    border-color var(--dur-1) var(--ease),
+    box-shadow var(--dur-1) var(--ease),
+    background-color var(--dur-1) var(--ease);
 }
 
 .field:hover {
-  border-color: var(--color-faint);
+  border-color: var(--vidro-fio-forte);
 }
 
 .field:focus,
 .field:focus-visible {
   outline: none;
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 16%, transparent);
+  background: rgba(10, 13, 8, 0.8);
+  box-shadow: 0 0 0 3px rgba(125, 148, 97, 0.22);
 }
 
 .field::placeholder {
-  color: var(--color-faint);
+  color: var(--color-tinta-4);
 }
 
 .field[aria-invalid="true"] {
-  border-color: var(--color-danger);
+  border-color: var(--color-perigo);
 }
 
 textarea.field {
-  min-height: 96px;
+  min-height: 92px;
   resize: vertical;
   line-height: 1.6;
 }
 
 select.field {
   appearance: none;
-  background-image: linear-gradient(45deg, transparent 50%, var(--color-muted) 50%),
-    linear-gradient(135deg, var(--color-muted) 50%, transparent 50%);
+  background-image: linear-gradient(45deg, transparent 50%, var(--color-tinta-2) 50%),
+    linear-gradient(135deg, var(--color-tinta-2) 50%, transparent 50%);
   background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
   background-size: 5px 5px, 5px 5px;
   background-repeat: no-repeat;
   padding-right: 2.25rem;
 }
 
-/* Botões — pílula, sempre. */
+select.field option {
+  background: #1c2216;
+  color: var(--color-tinta);
+}
+
+/* Botões — pílula, sempre. O primário é o único que carrega cor. */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  min-height: 40px;
-  padding: 0 1.1rem;
+  min-height: 38px;
+  padding: 0 1.05rem;
   border: 1px solid transparent;
   border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   white-space: nowrap;
   cursor: pointer;
-  transition: background-color 160ms var(--ease-sistema),
-    border-color 160ms var(--ease-sistema), color 160ms var(--ease-sistema);
+  transition:
+    background-color var(--dur-1) var(--ease),
+    border-color var(--dur-1) var(--ease),
+    color var(--dur-1) var(--ease),
+    transform var(--dur-1) var(--ease),
+    box-shadow var(--dur-1) var(--ease);
 }
 
 .btn:disabled {
-  opacity: 0.45;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
-.btn-primary {
-  background: var(--color-deep);
-  color: var(--color-on-deep);
+.btn-primario {
+  color: #12170d;
+  background: linear-gradient(180deg, #a9c48a 0%, #86a96a 100%);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.28) inset,
+    0 2px 10px rgba(134, 169, 106, 0.26);
 }
-.btn-primary:hover:not(:disabled) {
-  background: var(--color-accent);
+
+.btn-primario:hover:not(:disabled) {
+  background: linear-gradient(180deg, #b6d197 0%, #93b777 100%);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.34) inset,
+    0 4px 16px rgba(134, 169, 106, 0.36);
 }
 
 .btn-secundario {
-  background: var(--color-surface);
-  color: var(--color-deep);
-  border-color: var(--color-line-strong);
+  color: var(--color-tinta);
+  background: rgba(244, 241, 232, 0.06);
+  border-color: var(--vidro-fio);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
+
 .btn-secundario:hover:not(:disabled) {
-  border-color: var(--color-accent);
-  background: var(--color-accent-soft);
+  background: rgba(244, 241, 232, 0.11);
+  border-color: var(--vidro-fio-forte);
 }
 
 .btn-fantasma {
+  color: var(--color-tinta-2);
   background: transparent;
-  color: var(--color-muted);
 }
+
 .btn-fantasma:hover:not(:disabled) {
-  background: var(--color-surface-2);
-  color: var(--color-ink);
+  color: var(--color-tinta);
+  background: rgba(244, 241, 232, 0.07);
 }
 
 .btn-perigo {
+  color: var(--color-perigo);
   background: transparent;
-  color: var(--color-danger);
-  border-color: color-mix(in srgb, var(--color-danger) 35%, transparent);
-}
-.btn-perigo:hover:not(:disabled) {
-  background: var(--color-danger-bg);
+  border-color: rgba(221, 127, 99, 0.34);
 }
 
-/* Setas de CTA deslizam 4px no hover — microinteração com função. */
+.btn-perigo:hover:not(:disabled) {
+  background: var(--color-perigo-fundo);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.99);
+}
+
 .btn .seta {
-  transition: transform 160ms var(--ease-sistema);
+  transition: transform var(--dur-1) var(--ease);
 }
 .btn:hover .seta {
-  transform: translateX(4px);
+  transform: translateX(3px);
 }
 
 /* ==================================================================
-   Tabela — o fio é o separador, nunca o card
+   TABELA — superfície sólida (dado denso não vai em vidro)
    ================================================================== */
 
 .tabela {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
 .tabela thead th {
-  padding: 0 0.75rem 0.55rem;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 0.6rem 0.85rem;
   text-align: left;
   font-size: 0.6875rem;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--color-faint);
+  color: var(--color-tinta-3);
   white-space: nowrap;
-  border-bottom: 1px solid var(--color-line-strong);
+  background: rgba(18, 22, 14, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--vidro-fio-forte);
 }
 
 .tabela thead th:first-child {
-  padding-left: 0;
+  border-top-left-radius: var(--radius-xs);
 }
 .tabela thead th:last-child {
-  padding-right: 0;
+  border-top-right-radius: var(--radius-xs);
 }
 
 .tabela tbody tr {
-  border-bottom: 1px solid var(--color-line);
-  transition: background-color 160ms var(--ease-sistema);
+  transition: background-color var(--dur-1) var(--ease);
 }
 
 .tabela tbody tr:hover {
-  background: var(--color-surface-2);
+  background: rgba(244, 241, 232, 0.035);
 }
 
 .tabela tbody td {
-  padding: 0.8rem 0.75rem;
+  padding: 0.78rem 0.85rem;
   vertical-align: baseline;
+  border-bottom: 1px solid rgba(244, 241, 232, 0.07);
 }
 
-.tabela tbody td:first-child {
-  padding-left: 0;
-}
-.tabela tbody td:last-child {
-  padding-right: 0;
+.tabela tbody tr:last-child td {
+  border-bottom: 0;
 }
 
 .tabela .num {
@@ -320,50 +788,111 @@ select.field {
 }
 
 .tabela-compacta tbody td {
-  padding-top: 0.55rem;
-  padding-bottom: 0.55rem;
+  padding-top: 0.52rem;
+  padding-bottom: 0.52rem;
 }
 
 /* ==================================================================
-   Estrutura
+   ROLAGEM — o scrollbar também carrega o design
    ================================================================== */
 
-/* Linha de dado: rótulo à esquerda, valor à direita, fio embaixo.
-   O padrão de tabela deste projeto — o fio substitui o card. */
-.linha-dado {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.7rem 0;
-  border-bottom: 1px solid var(--color-line);
-}
-.linha-dado:last-child {
-  border-bottom: 0;
-}
-
-/* Barra de rolagem discreta — a tela tem listas longas. */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-line-strong) transparent;
+  scrollbar-color: rgba(244, 241, 232, 0.18) transparent;
 }
+
 *::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
-*::-webkit-scrollbar-thumb {
-  background: var(--color-line-strong);
-  border-radius: 999px;
-  border: 3px solid transparent;
-  background-clip: content-box;
-}
+
 *::-webkit-scrollbar-track {
   background: transparent;
 }
 
+*::-webkit-scrollbar-thumb {
+  background: rgba(244, 241, 232, 0.16);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(244, 241, 232, 0.28);
+  background-clip: content-box;
+}
+
 /* ==================================================================
-   Impressão — contratos, orçamentos, relatórios de conformidade
-   O documento sai limpo: sem shell, sem navegação, sem cor de fundo.
+   ANIMAÇÃO
+   ================================================================== */
+
+@keyframes surgir {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes surgir-lado {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animar {
+  animation: surgir 420ms var(--ease) both;
+}
+
+.animar-lado {
+  animation: surgir-lado 380ms var(--ease) both;
+}
+
+.animar-escurecer {
+  animation: fade-in 200ms var(--ease) both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Escalonamento curto — nunca "a mesma animação em tudo". */
+.grupo > * {
+  animation: surgir 420ms var(--ease) both;
+}
+.grupo > *:nth-child(1) { animation-delay: 0ms; }
+.grupo > *:nth-child(2) { animation-delay: 45ms; }
+.grupo > *:nth-child(3) { animation-delay: 90ms; }
+.grupo > *:nth-child(4) { animation-delay: 135ms; }
+.grupo > *:nth-child(5) { animation-delay: 180ms; }
+.grupo > *:nth-child(6) { animation-delay: 225ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ==================================================================
+   IMPRESSÃO — o documento sai em papel, nunca em vidro
    ================================================================== */
 
 @media print {
@@ -375,13 +904,18 @@ select.field {
   html,
   body {
     background: #fff !important;
+    color: #000 !important;
   }
 
+  /* Tudo que é interface desaparece. */
+  .fundo,
+  .lateral,
   .nao-imprimir {
     display: none !important;
   }
 
   .doc-impressao {
+    position: static !important;
     box-shadow: none !important;
     border: 0 !important;
     margin: 0 !important;
@@ -390,63 +924,31 @@ select.field {
     width: 100% !important;
     background: #fff !important;
     color: #000 !important;
+    backdrop-filter: none !important;
   }
 
-  .doc-impressao * {
+  .doc-impressao *,
+  .doc-impressao *::before {
     color: #000 !important;
+    background: transparent !important;
     box-shadow: none !important;
+    text-shadow: none !important;
   }
 
   .doc-impressao .doc-cabecalho {
-    border-bottom: 2px solid #000 !important;
+    border-bottom: 1.5pt solid #000 !important;
   }
 
-  .doc-impressao table {
-    page-break-inside: auto;
-  }
-
-  .doc-impressao tr {
-    page-break-inside: avoid;
-    page-break-after: auto;
-  }
-
+  .doc-impressao tr,
   .doc-impressao h1,
   .doc-impressao h2,
-  .doc-impressao h3 {
+  .doc-impressao h3,
+  .doc-impressao section {
+    page-break-inside: avoid;
     page-break-after: avoid;
   }
 
   .doc-quebra {
     page-break-before: always;
-  }
-}
-
-/* ==================================================================
-   Movimento
-   ================================================================== */
-
-@keyframes surgir {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-.animar {
-  animation: surgir 320ms var(--ease-sistema) both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 }

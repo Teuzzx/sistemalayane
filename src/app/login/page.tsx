@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
+import { FundoVideo } from "@/components/FundoVideo";
 import { FormularioLogin } from "@/components/FormularioLogin";
 import { getUsuario } from "@/lib/auth";
 
@@ -10,86 +11,106 @@ export default async function PaginaLogin() {
   if (await getUsuario()) redirect("/painel");
 
   return (
-    <main className="grid min-h-dvh lg:grid-cols-[1.1fr_1fr]">
-      {/* Painel de marca — o verde da logo, com o sistema cartográfico
-          atrás. Só login; o resto do sistema é papel. */}
-      <section className="relative hidden overflow-hidden bg-deep px-12 py-14 lg:flex lg:flex-col lg:justify-between">
-        <PlacaCartografica />
+    <div className="relative min-h-dvh">
+      <FundoVideo />
 
-        <div className="relative">
-          <p className="text-[1.35rem] leading-tight font-500 text-on-deep">
-            Layane Marques
-            <span className="font-accent ml-2">Gestão</span>
-            <span className="ml-1.5 text-on-deep/72">Ambiental Aplicada</span>
-          </p>
-        </div>
+      <main className="relative z-10 grid min-h-dvh lg:grid-cols-[1.15fr_1fr]">
+        {/* Painel de marca */}
+        <section className="relative hidden overflow-hidden lg:flex lg:flex-col lg:justify-between lg:p-14">
+          <PlaCartografica />
 
-        <div className="relative max-w-[46ch]">
-          <p className="text-[2rem] leading-[1.12] font-500 tracking-[-0.01em] text-on-deep">
-            Um só lugar para cliente, contrato e
-            <span className="font-accent ml-1.5">caixa.</span>
-          </p>
-          <p className="mt-5 text-[0.9375rem] leading-relaxed text-on-deep/72">
-            O ponto de encontro do seu trabalho: cadastro, histórico de
-            atendimento, orçamento, contrato, conformidade e financeiro.
-          </p>
-        </div>
+          <div className="relative">
+            <Selo />
+          </div>
 
-        <p className="index-num relative text-mineral-soft">
-          S 06°13&apos; · W 42°49&apos; — PI
-        </p>
-      </section>
-
-      {/* Formulário */}
-      <section className="flex items-center justify-center px-6 py-14 sm:px-10">
-        <div className="w-full max-w-[380px]">
-          <div className="lg:hidden">
-            <p className="text-[1.25rem] leading-tight font-500">
-              Layane Marques
-              <span className="font-accent ml-1.5">Gestão</span>
+          <div className="relative max-w-[46ch]">
+            <p className="text-[2.4rem] leading-[1.08] font-500 tracking-[-0.014em]">
+              Um só lugar para cliente, contrato e{" "}
+              <span className="font-accent">caixa.</span>
             </p>
-            <p className="mt-0.5 text-[0.8125rem] text-muted">
-              Gestão Ambiental Aplicada
+            <p className="mt-5 text-[0.9375rem] leading-relaxed text-muted">
+              O ponto de encontro do seu trabalho: cadastro, histórico de
+              atendimento, orçamento, contrato, conformidade e financeiro.
             </p>
           </div>
 
-          <h1 className="mt-8 text-[1.6rem] leading-tight font-500 tracking-[-0.008em] lg:mt-0">
-            Entrar no sistema
-          </h1>
-          <p className="mt-1.5 mb-7 text-[0.9375rem] text-muted">
-            Acesso restrito à equipe.
+          <p
+            className="relative text-[0.6875rem] tracking-[0.22em] text-[var(--color-tinta-4)] uppercase"
+            aria-hidden="true"
+          >
+            S 06°13′ · W 42°49′ — PI
           </p>
+        </section>
 
-          <FormularioLogin />
+        {/* Formulário — vidro, porque é o que a pessoa opera */}
+        <section className="flex items-center justify-center px-5 py-16 sm:px-10">
+          <div className="w-full max-w-[400px]">
+            <div className="lg:hidden">
+              <Selo />
+            </div>
 
-          <p className="mt-8 border-t border-line pt-4 text-[0.8125rem] text-faint">
-            Problema para entrar? Fale com a Layane — ela restaura o acesso.
-          </p>
-        </div>
-      </section>
-    </main>
+            <h1 className="mt-9 text-[1.75rem] leading-none font-500 tracking-[-0.012em] lg:mt-0">
+              Entrar
+            </h1>
+            <p className="mt-2.5 mb-7 text-[0.875rem] text-muted">
+              Acesso restrito à equipe.
+            </p>
+
+            <div className="painel p-5 sm:p-6">
+              <FormularioLogin />
+            </div>
+
+            <p className="mt-6 text-[0.8125rem] leading-relaxed text-faint">
+              Problema para entrar? Fale com a Layane — ela restaura o acesso.
+            </p>
+          </div>
+        </section>
+      </main>
+    </div>
   );
 }
 
-/** Sistema cartográfico autoral: curvas de nível + ticks de coordenada. */
-function PlacaCartografica() {
+/** Selo da marca — vidro com reflexo, o monograma da logo. */
+function Selo() {
+  return (
+    <div className="flex items-center gap-3">
+      <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-b from-[#a9c48a] to-[#6f8a55] text-[0.9375rem] font-700 text-[#14190f] shadow-[0_1px_0_rgba(255,255,255,0.35)_inset,0_3px_14px_rgba(134,169,106,0.32)]">
+        LM
+      </span>
+      <span>
+        <span className="block text-[1.0625rem] leading-tight font-500">
+          Layane Marques
+          <span className="font-accent ml-1.5">Gestão</span>
+        </span>
+        <span className="block text-[0.75rem] text-muted">
+          Gestão Ambiental Aplicada
+        </span>
+      </span>
+    </div>
+  );
+}
+
+/**
+ * Sistema cartográfico autoral: curvas de nível + ticks de coordenada.
+ * Só o wireframe — o resto da identidade está no vidro e no vídeo.
+ */
+function PlaCartografica() {
   return (
     <svg
-      className="pointer-events-none absolute inset-0 h-full w-full text-mineral-soft"
+      className="pointer-events-none absolute inset-0 h-full w-full text-[var(--color-mineral)]"
       aria-hidden="true"
       preserveAspectRatio="xMidYMid slice"
     >
-      <g stroke="currentColor" strokeWidth="1" fill="none" opacity="0.22">
-        <path d="M-50 180 C 160 120, 320 240, 760 160" />
-        <path d="M-50 240 C 180 180, 330 300, 760 220" />
-        <path d="M-50 300 C 190 250, 340 360, 760 290" />
-        <path d="M-50 360 C 200 320, 350 420, 760 360" />
-        <path d="M-50 420 C 210 390, 360 480, 760 430" />
-        <path d="M-50 480 C 220 460, 370 540, 760 500" />
-        <path d="M-50 540 C 230 530, 380 600, 760 570" />
-        <path d="M-50 600 C 240 600, 390 660, 760 640" />
+      <g stroke="currentColor" strokeWidth="1" fill="none" opacity="0.14">
+        <path d="M-50 200 C 180 130, 340 260, 820 170" />
+        <path d="M-50 270 C 200 200, 350 330, 820 240" />
+        <path d="M-50 340 C 210 280, 360 400, 820 310" />
+        <path d="M-50 410 C 220 360, 370 470, 820 390" />
+        <path d="M-50 480 C 230 440, 380 540, 820 470" />
+        <path d="M-50 550 C 240 520, 390 610, 820 550" />
+        <path d="M-50 620 C 250 600, 400 680, 820 630" />
       </g>
-      <g stroke="currentColor" strokeWidth="1" opacity="0.32">
+      <g stroke="currentColor" strokeWidth="1" opacity="0.1">
         {Array.from({ length: 24 }).map((_, i) => (
           <line
             key={i}
@@ -97,7 +118,7 @@ function PlacaCartografica() {
             y1={0}
             x2={i * 60 - 120}
             y2={900}
-            opacity={i % 4 === 0 ? 0.9 : 0.35}
+            opacity={i % 4 === 0 ? 0.9 : 0.3}
           />
         ))}
       </g>

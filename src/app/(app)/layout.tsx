@@ -1,9 +1,15 @@
 import { redirect } from "next/navigation";
-import { and, count, eq, inArray, lte, ne, sql } from "drizzle-orm";
+import { and, count, eq, inArray, lte, ne } from "drizzle-orm";
 
+import { FundoVideo } from "@/components/FundoVideo";
 import { Navegacao } from "@/components/Navegacao";
 import { db } from "@/db";
-import { analisesConformidade, contratos, documentos, lancamentos } from "@/db/schema";
+import {
+  analisesConformidade,
+  contratos,
+  documentos,
+  lancamentos,
+} from "@/db/schema";
 import { getUsuario } from "@/lib/auth";
 import { hoje, somaDias } from "@/lib/dates";
 
@@ -15,7 +21,7 @@ export default async function LayoutInterno({
   const usuario = await getUsuario();
   if (!usuario) redirect("/login");
 
-  /* Contadores da barra lateral — só o que exige ação, não contagem total. */
+  /* Contadores da barra — só o que exige ação, nunca contagem total. */
   const [docs] = await db
     .select({ n: count() })
     .from(documentos)
@@ -47,23 +53,19 @@ export default async function LayoutInterno({
     .where(inArray(contratos.status, ["ativo", "assinado"]));
 
   const contagens = {
-    "/documentos": {
-      n: docs?.n ?? 0,
-      tom: "warn" as const,
-    },
-    "/financeiro": {
-      n: contas?.n ?? 0,
-      tom: "warn" as const,
-    },
-    "/conformidade": { n: analises?.n ?? 0, tom: "warn" as const },
-    "/contratos": { n: ativos?.n ?? 0, tom: "warn" as const },
+    "/documentos": { n: docs?.n ?? 0, tom: "atencao" as const },
+    "/financeiro": { n: contas?.n ?? 0, tom: "atencao" as const },
+    "/conformidade": { n: analises?.n ?? 0, tom: "atencao" as const },
+    "/contratos": { n: ativos?.n ?? 0, tom: "atencao" as const },
   };
 
   return (
-    <div className="min-h-dvh">
+    <div className="app">
+      <FundoVideo />
       <Navegacao usuario={usuario} contagens={contagens} />
-      <main className="lg:pl-[248px]">
-        <div className="mx-auto w-full max-w-[1240px] px-5 py-7 sm:px-8 sm:py-9 lg:px-12">
+
+      <main className="conteudo">
+        <div className="mx-auto w-full max-w-[1320px] px-4 pb-16 pt-16 sm:px-7 sm:pt-20 lg:px-10 lg:pt-8">
           {children}
         </div>
       </main>
