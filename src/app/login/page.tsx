@@ -12,7 +12,7 @@ export default async function PaginaLogin() {
 
   return (
     <div className="relative min-h-dvh">
-      <FundoVideo />
+      <FundoVideo variante="forte" />
 
       <main className="relative z-10 grid min-h-dvh lg:grid-cols-[1.15fr_1fr]">
         {/* Painel de marca */}

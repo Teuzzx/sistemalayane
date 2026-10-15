@@ -12,15 +12,26 @@
  * de campo. O movimento continua vivo atrás da interface, que é o que dá
  * profundidade ao vidro.
  *
+ * Duas intensidades, e a diferença é intencional:
+ *
+ * - `sutil` (dentro do sistema): o fundo é ambiente. Fica atrás do dado e
+ *   não pode competir com ele.
+ * - `forte` (login): a tela não tem dado. O vídeo pode aparecer — é a
+ *   primeira impressão da marca, e um fundo morto seria uma tela vazia.
+ *
  * Três camadas, nesta ordem:
- *   1. gradiente de base (evita flash branco antes do vídeo carregar)
+ *   1. gradiente de base (evita flash antes do vídeo carregar)
  *   2. o vídeo, com filtro
  *   3. véu de contraste — legibilidade acima de tudo
  */
 
-export function FundoVideo() {
+export function FundoVideo({
+  variante = "sutil",
+}: {
+  variante?: "sutil" | "forte";
+}) {
   return (
-    <div className="fundo" aria-hidden="true">
+    <div className="fundo" data-fundo={variante} aria-hidden="true">
       <video
         className="fundo__video"
         autoPlay
@@ -28,7 +39,6 @@ export function FundoVideo() {
         loop
         playsInline
         preload="auto"
-        // Acessível a leitor de tela só via aria-hidden do container.
         tabIndex={-1}
       >
         <source src="/video/territorio.mp4" type="video/mp4" />

@@ -216,6 +216,51 @@
   }
 }
 
+/* ------------------------------------------------------------------
+   INTENSIDADE
+   ------------------------------------------------------------------
+   No login o vídeo é o assunto da tela — aparece de verdade. Dentro do
+   sistema ele é ambiente: some atrás do dado. A escolha é por contexto
+   de uso, não por gosto.
+   ------------------------------------------------------------------ */
+
+.fundo[data-fundo="forte"] .fundo__video {
+  filter: saturate(0.46) contrast(0.92) brightness(1) blur(17px)
+    sepia(0.3) hue-rotate(-16deg);
+  opacity: 0.88;
+  transform: scale(1.06);
+}
+
+.fundo[data-fundo="forte"] .fundo__veu {
+  background:
+    radial-gradient(
+      120% 90% at 22% 18%,
+      rgba(134, 160, 104, 0.5) 0%,
+      transparent 64%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(46, 57, 36, 0.42) 0%,
+      rgba(33, 41, 26, 0.3) 50%,
+      rgba(18, 23, 14, 0.58) 100%
+    );
+}
+
+.fundo[data-fundo="forte"] .fundo__vinheta {
+  background:
+    radial-gradient(
+      130% 100% at 50% 45%,
+      transparent 20%,
+      rgba(8, 11, 6, 0.62) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(10, 13, 8, 0.55) 0%,
+      transparent 46%,
+      rgba(10, 13, 8, 0.4) 100%
+    );
+}
+
 /* ==================================================================
    BASE
    ================================================================== */
@@ -867,6 +912,18 @@ select.field option {
   to {
     opacity: 1;
   }
+}
+
+/* Anel de carregamento do login. `linear` e não a curva do sistema: uma
+   volta completa é rotação constante, não transição. */
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.girando {
+  animation: girar 720ms linear infinite;
 }
 
 /* Escalonamento curto — nunca "a mesma animação em tudo". */
