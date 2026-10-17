@@ -6,6 +6,7 @@ data/*.db-journal
 data/*.db-wal
 data/*.db-shm
 *.local
+.env
 .env.local
 .DS_Store
 next-env.d.ts
