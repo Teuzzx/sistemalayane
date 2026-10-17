@@ -17,6 +17,7 @@ import {
   Painel,
   Regua,
 } from "@/components/ui";
+import { pluralizar } from "@/lib/utils";
 
 export default async function PaginaOrcamento({ params }: { params: Promise<{ id: string }> }) {
   await exigirSecao("orcamentos");
@@ -57,7 +58,7 @@ export default async function PaginaOrcamento({ params }: { params: Promise<{ id
 
       <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr]">
         {/* --- Itens --- */}
-        <Painel titulo="Itens" descricao={`${o.itens.length} item(ns) cotado(s).`}>
+        <Painel titulo="Itens" descricao={`${pluralizar(o.itens.length, "item cotado", "itens cotados")}.`}>
           <table className="tabela">
             <thead>
               <tr>

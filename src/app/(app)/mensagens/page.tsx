@@ -38,6 +38,7 @@ import { clientes } from "@/db/schema";
 import { asc, eq } from "drizzle-orm";
 import type { MensagemTipo, StatusEnvio } from "@/db/schema";
 import { rotulosMensagem } from "@/db/schema";
+import { pluralizar } from "@/lib/utils";
 
 export const metadata = { title: "Mensagens" };
 
@@ -127,7 +128,7 @@ export default async function PaginaMensagens({
 
         <Painel
           titulo="Conversas"
-          descricao={`${lista.length} registro(s)`}
+          descricao={`${pluralizar(lista.length, "registro", "registros")}`}
           solido
           acoes={
             <nav className="flex flex-wrap gap-1.5" aria-label="Filtrar por status">

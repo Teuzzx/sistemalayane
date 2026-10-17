@@ -262,7 +262,15 @@ export function CabecalhoPagina({
 }) {
   return (
     <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4 pb-6">
-      <div className="min-w-0 flex-1">
+      {/*
+        `basis-full` no mobile resolve o cabeçalho espremido: os botões de
+        ação têm `shrink-0` e recusam encolher, então o bloco do texto — que
+        é `flex-1` (base 0) — ficava com os ~80px que sobrassem e a
+        descrição quebrava a cada nove letras. Forçando a linha inteira,
+        o texto ocupa a largura toda e os botões descem para baixo. A
+        partir de `sm` volta a ser lado a lado, como sempre.
+      */}
+      <div className="min-w-0 flex-1 basis-full sm:basis-auto">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <h1 className="text-[1.65rem] leading-none font-500 tracking-[-0.01em]">
             {titulo}
@@ -281,7 +289,9 @@ export function CabecalhoPagina({
         )}
       </div>
       {acoes && (
-        <div className="flex shrink-0 flex-wrap items-center gap-2">{acoes}</div>
+        <div className="flex w-full shrink-0 flex-wrap items-center gap-2 sm:w-auto">
+          {acoes}
+        </div>
       )}
     </header>
   );

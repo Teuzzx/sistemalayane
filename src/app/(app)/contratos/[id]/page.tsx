@@ -19,6 +19,7 @@ import {
   Vazio,
 } from "@/components/ui";
 import { listarLancamentos } from "@/lib/consultas";
+import { pluralizar } from "@/lib/utils";
 
 export default async function PaginaContrato({ params }: { params: Promise<{ id: string }> }) {
   await exigirSecao("contratos");
@@ -90,7 +91,7 @@ export default async function PaginaContrato({ params }: { params: Promise<{ id:
       <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
         <Painel
           titulo="Parcelas"
-          descricao={`${doContrato.length} lançamento(s) gerado(s) pelo contrato.`}
+          descricao={`${pluralizar(doContrato.length, "lançamento gerado", "lançamentos gerados")} pelo contrato.`}
           acoes={
             <Link
               href={`/financeiro?clienteId=${c.clienteId}`}

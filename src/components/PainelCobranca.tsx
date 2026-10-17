@@ -24,6 +24,7 @@ import {
 import { Aviso, Botao, Etiqueta, Painel, type Tom } from "@/components/ui";
 import { brl } from "@/lib/money";
 import { formatarData } from "@/lib/dates";
+import { pluralizar } from "@/lib/utils";
 
 type Plano = Awaited<ReturnType<typeof prepararCobranca>>;
 
@@ -112,7 +113,7 @@ export function PainelCobranca() {
         <form action={formAction} className="grid gap-4">
           <p className="text-[0.875rem] text-muted">
             <strong className="text-bright">{plano.itens.length}</strong>{" "}
-            lançamento(s),{" "}
+            {pluralizar(plano.itens.length, "lançamento", "lançamentos")},{" "}
             <strong className="text-bright">{brl(plano.totalCentavos)}</strong>{" "}
             no total. Confira a lista antes de confirmar.
           </p>
@@ -151,7 +152,7 @@ export function PainelCobranca() {
                         <Etiqueta tom={u.tom}>{u.texto}</Etiqueta>
                         {i.dias < 0 && (
                           <span className="mt-1 block text-[0.6875rem] text-faint tnum">
-                            {Math.abs(i.dias)} dia(s)
+                            {pluralizar(Math.abs(i.dias), "dia", "dias")}
                           </span>
                         )}
                       </td>
@@ -165,7 +166,7 @@ export function PainelCobranca() {
           {plano.ignorados.length > 0 && (
             <details className="rounded-[var(--radius-painel)] border border-[var(--vidro-fio)] bg-[rgba(244,241,232,0.02)] px-4 py-3">
               <summary className="cursor-pointer text-[0.8125rem] text-muted">
-                {plano.ignorados.length} lançamento(s) ficou(aram) de fora —
+                {pluralizar(plano.ignorados.length, "lançamento ficou", "lançamentos ficaram")} de fora —
                 ver o motivo
               </summary>
               <ul className="mt-3 grid gap-1.5">

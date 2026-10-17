@@ -12,6 +12,7 @@ import {
   type ModeloConformidade,
   type Resposta,
 } from "@/db/schema";
+import { pluralizar } from "@/lib/utils";
 
 const OPCOES: { v: string; r: string; tom: Tom }[] = [
   { v: "sim", r: rotulosResposta.sim, tom: "ok" },
@@ -95,10 +96,10 @@ export function FormConformidade({
           </div>
           <div className="flex flex-wrap gap-1.5">
             {naoConformes > 0 && (
-              <Etiqueta tom="danger">{naoConformes} não conforme(s)</Etiqueta>
+              <Etiqueta tom="danger">{pluralizar(naoConformes, "não conforme", "não conformes")}</Etiqueta>
             )}
             {criticasAbertas > 0 && (
-              <Etiqueta tom="danger">{criticasAbertas} crítica(s)</Etiqueta>
+              <Etiqueta tom="danger">{pluralizar(criticasAbertas, "crítica", "críticas")}</Etiqueta>
             )}
             {progresso.feitas === progresso.total && criticasAbertas === 0 && (
               <Etiqueta tom="ok">Respondido</Etiqueta>
@@ -136,8 +137,8 @@ export function FormConformidade({
                   <div>
                     <h2 className="text-[1.0625rem] font-500">{bloco}</h2>
                     <p className="text-[0.8125rem] text-faint">
-                      {perguntas.filter((p) => respostas[p.id] !== "nao_avaliado").length}{" "}
-                      de {perguntas.length} respondida(s)
+                      {perguntas.filter((p) => respostas[p.id] !== "nao_avaliado").length} de{" "}
+                      {pluralizar(perguntas.length, "respondida", "respondidas")}
                     </p>
                   </div>
                 </header>

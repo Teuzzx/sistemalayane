@@ -15,7 +15,7 @@ import { resumoPeriodo } from "@/actions/financeiro";
 import { rotulosFormaPagamento } from "@/db/schema";
 import { formatarData, hoje } from "@/lib/dates";
 import { brl } from "@/lib/money";
-import { mascararDocumento } from "@/lib/utils";
+import { mascararDocumento, pluralizar } from "@/lib/utils";
 import {
   CabecalhoPagina,
   Estatistica,
@@ -119,18 +119,18 @@ export default async function PaginaFinanceiro({
         <Estatistica
           rotulo="Em aberto"
           valor={brl(emAberto.reduce((a, l) => a + l.valor, 0))}
-          detalhe={`${emAberto.length} lançamento(s)`}
+          detalhe={`${pluralizar(emAberto.length, "lançamento", "lançamentos")}`}
         />
         <Estatistica
           rotulo="Atrasado"
           valor={brl(atrasados.reduce((a, l) => a + l.valor, 0))}
-          detalhe={`${atrasados.length} vencido(s)`}
+          detalhe={`${pluralizar(atrasados.length, "vencido", "vencidos")}`}
           tom={atrasados.length > 0 ? "danger" : undefined}
         />
         <Estatistica
           rotulo="Vence em 30 dias"
           valor={brl(vencendo30.reduce((a, l) => a + l.valor, 0))}
-          detalhe={`${vencendo30.length} cobrança(s)`}
+          detalhe={`${pluralizar(vencendo30.length, "cobrança", "cobranças")}`}
         />
         <Estatistica
           rotulo="Ano"

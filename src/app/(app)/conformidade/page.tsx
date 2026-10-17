@@ -12,6 +12,7 @@ import {
   Painel,
   Vazio,
 } from "@/components/ui";
+import { pluralizar } from "@/lib/utils";
 
 export const metadata = { title: "Conformidade" };
 
@@ -117,7 +118,7 @@ export default async function PaginaConformidade({
           }
         />
       ) : (
-        <Painel titulo={`${analises.length} análise(s)`}>
+        <Painel titulo={pluralizar(analises.length, "análise", "análises")}>
           <div className="overflow-x-auto">
             <table className="tabela">
               <thead>

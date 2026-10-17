@@ -6,6 +6,7 @@ import { requireAdmin } from "@/lib/auth";
 import { db } from "@/db";
 import { modelosConformidade } from "@/db/schema";
 import { Etiqueta, Painel, Vazio } from "@/components/ui";
+import { pluralizar } from "@/lib/utils";
 
 export const metadata = { title: "Questionários de conformidade" };
 
@@ -48,7 +49,7 @@ export default async function PaginaModelos({
       {emEdicao && (
         <Painel
           titulo={emEdicao.nome}
-          descricao={`${emEdicao.modelo.perguntas.length} pergunta(s) · versão ${emEdicao.versao}`}
+          descricao={`${pluralizar(emEdicao.modelo.perguntas.length, "pergunta", "perguntas")} · versão ${emEdicao.versao}`}
         >
           <ol>
             {emEdicao.modelo.perguntas.map((p, i) => (
@@ -81,7 +82,7 @@ export default async function PaginaModelos({
       {modelos.length === 0 ? (
         <Vazio titulo="Nenhum questionário" />
       ) : (
-        <Painel titulo={`${modelos.length} questionário(s)`}>
+        <Painel titulo={pluralizar(modelos.length, "questionário", "questionários")}>
           <table className="tabela">
             <thead>
               <tr>
