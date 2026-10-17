@@ -15,6 +15,8 @@ import {
   verificarSenha,
 } from "@/lib/auth";
 import { novoId } from "@/lib/ids";
+import { avaliarSenha } from "@/lib/senha";
+import { ipDoCliente, limpar, registrar, situacao } from "@/lib/seguranca";
 
 export type EstadoForm = {
   erro?: string;
@@ -30,6 +32,14 @@ const esquemaLogin = z.object({
   senha: z.string().min(1, "Informe a senha."),
 });
 
+/**
+ * Hash descartável, só para gastar o mesmo tempo do bcrypt quando o
+ * e-mail não existe. Sem ele a resposta para "e-mail inexistente"
+ * voltaria em ~2ms em vez de ~200ms — e essa diferença revelaria quem
+ * tem conta no sistema.
+ */
+const DUMMY_HASH = "$2a$12$4QOCrDDBtxf2cRwCcXBbLueVHH3Bqx4uMXmmpHXHBc0Q8uLPZ7y";
+
 export async function entrar(
   _estado: EstadoForm,
   formData: FormData,
@@ -40,20 +50,41 @@ export async function entrar(
   }
 
   const { email, senha } = checado.data;
+  const ip = await ipDoCliente();
 
-  const linhas = await db.select().from(usuarios).where(eq(usuarios.email, email)).limit(1);
+  /*
+   * Antes de tocar no banco: se já há tentativa de força bruta em curso,
+   * nem comparamos a senha. A mensagem diz quanto falta, não por quê
+   * exatamente — revelar a regra deixaria o atacante calibrar o ataque.
+   */
+  const bloqueio = await situacao(email, ip);
+  if (bloqueio.bloqueado) {
+    return {
+      erro: `Muitas tentativas. Tente novamente em ${bloqueio.esperaMin} minuto(s).`,
+    };
+  }
+
+  const linhas = await db
+    .select()
+    .from(usuarios)
+    .where(eq(usuarios.email, email))
+    .limit(1);
   const usuario = linhas[0];
 
-  // Mesma resposta para "não existe" e "senha errada" —" a tela de login
-  // não serve de lista de e-mails cadastrados.
-  if (!usuario || !usuario.ativo) {
+  /*
+   * Mesma resposta e mesmo tempo para "não existe" e "senha errada". A
+   * tela de login não pode virar lista de e-mails cadastrados.
+   */
+  const referencia = usuario?.senhaHash ?? DUMMY_HASH;
+  const confere = await verificarSenha(senha, referencia);
+
+  if (!usuario || !usuario.ativo || !confere) {
+    await registrar(email, ip, false, usuario ? "senha" : "inexistente");
     return { erro: "E-mail ou senha incorretos." };
   }
 
-  if (!(await verificarSenha(senha, usuario.senhaHash))) {
-    return { erro: "E-mail ou senha incorretos." };
-  }
-
+  await registrar(email, ip, true);
+  await limpar(email);
   await criarSessao(usuario.id);
   redirect("/painel");
 }
@@ -64,7 +95,7 @@ export async function sair(): Promise<void> {
 }
 
 /* ------------------------------------------------------------------ */
-/* Usuários —" só admin                                                 */
+/* Usuários — só admin                                                */
 /* ------------------------------------------------------------------ */
 
 const esquemaNovoUsuario = z.object({
@@ -72,20 +103,25 @@ const esquemaNovoUsuario = z.object({
   email: z.string().trim().toLowerCase().pipe(z.email("E-mail inválido.")),
   cargo: z.string().trim().optional(),
   papel: z.enum(["admin", "assistente"]),
-  senha: z.string().min(8, "A senha precisa de ao menos 8 caracteres."),
+  senha: z.string().min(1, "Informe a senha."),
 });
 
 export async function criarUsuario(
   _estado: EstadoForm,
   formData: FormData,
 ): Promise<EstadoForm> {
-  const admin = await requireAdmin();
+  await requireAdmin();
 
   const checado = esquemaNovoUsuario.safeParse(Object.fromEntries(formData));
   if (!checado.success) {
     return { erro: checado.error.issues[0]?.message ?? "Dados inválidos." };
   }
   const { nome, email, cargo, papel, senha } = checado.data;
+
+  const forca = avaliarSenha(senha);
+  if (!forca.ok) {
+    return { erro: `Senha fraca: ${forca.problemas.join(" ")}` };
+  }
 
   const jaExiste = await db
     .select({ id: usuarios.id })
@@ -138,8 +174,9 @@ export async function trocarSenha(
   const id = String(formData.get("id") ?? "");
   const senha = String(formData.get("senha") ?? "");
 
-  if (senha.length < 8) {
-    return { erro: "A senha precisa de ao menos 8 caracteres." };
+  const forca = avaliarSenha(senha);
+  if (!forca.ok) {
+    return { erro: `Senha fraca: ${forca.problemas.join(" ")}` };
   }
 
   const linhas = await db.select().from(usuarios).where(eq(usuarios.id, id)).limit(1);
@@ -154,7 +191,7 @@ export async function trocarSenha(
   return { ok: "Senha atualizada." };
 }
 
-/** "Sair de todos os dispositivos" —" quando a Layane acha que o acesso vazou. */
+/** "Sair de todos os dispositivos" — quando a Layane acha que o acesso vazou. */
 export async function revogarSessoes(formData: FormData): Promise<void> {
   await requireAdmin();
   const id = String(formData.get("id") ?? "");
@@ -172,8 +209,9 @@ export async function trocarMinhaSenha(
   const atual = String(formData.get("atual") ?? "");
   const nova = String(formData.get("nova") ?? "");
 
-  if (nova.length < 8) {
-    return { erro: "A nova senha precisa de ao menos 8 caracteres." };
+  const forca = avaliarSenha(nova);
+  if (!forca.ok) {
+    return { erro: `Senha fraca: ${forca.problemas.join(" ")}` };
   }
 
   const linhas = await db.select().from(usuarios).where(eq(usuarios.id, eu.id)).limit(1);

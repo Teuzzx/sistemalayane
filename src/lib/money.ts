@@ -57,11 +57,35 @@ export function paraCentavos(entrada: string | number | null | undefined): numbe
 
   const n = Number(s);
   if (!Number.isFinite(n)) return null;
-  return arredondarCentavos(Math.round(n * 100));
+  /* `arredondarCentavos`, e não `Math.round`: a multiplicação por 100 é
+     justamente onde o meio se perde — "10,005" viraria 1000 em vez de
+     1001. */
+  return arredondarCentavos(n * 100);
 }
 
-/** Evita `0.1 + 0.2` virando `30000000000000004`. */
+/**
+ * Arredonda para o centavo mais próximo.
+ *
+ * `Math.round` sozinho não basta, porque em IEEE 754 o "meio" não é
+ * representável: `1.005 * 100` vale `100.49999999999999`, e o
+ * `Math.round` cru devolve `100`. Um centavo a menos, justamente nos
+ * valores que a regra existe para acertar.
+ *
+ * A correção é cirúrgica de propósito — só age quando o resto está a
+ * menos de 1e-9 de 0,5, ou seja, quando a intenção era o meio exato.
+ * Valores legítimos como `0,499` ou `0,501` passam intactos, e um
+ * epsilon ingênuo aplicado a tudo deformaria centavos reais.
+ */
 export function arredondarCentavos(n: number): number {
+  if (!Number.isFinite(n)) return 0;
+
+  const resto = n - Math.trunc(n);
+  if (Math.abs(resto - 0.5) < 1e-9) {
+    /* Metade exata: "arredonda para cima" significa para +infinito,
+       então -100,5 vira -100, não -101. */
+    return Math.trunc(n) + (n < 0 ? 0 : 1);
+  }
+
   return Math.round(n);
 }
 

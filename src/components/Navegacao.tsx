@@ -50,6 +50,12 @@ const GRUPOS: { titulo: string; itens: Item[] }[] = [
     titulo: "Caixa",
     itens: [
       { href: "/financeiro", rotulo: "Financeiro", icone: "financeiro", tom: "atencao" },
+      {
+        href: "/mensagens",
+        rotulo: "Mensagens",
+        icone: "email",
+        tom: "atencao",
+      },
     ],
   },
   {

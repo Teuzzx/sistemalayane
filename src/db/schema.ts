@@ -60,6 +60,138 @@ export const usuarios = sqliteTable(
   (t) => [uniqueIndex("usuarios_email_idx").on(t.email)],
 );
 
+/* ------------------------------------------------------------------ */
+/* E-mail e central de mensagens                                      */
+/* ------------------------------------------------------------------ */
+
+/** Tipo da mensagem — o que ela é no fluxo da Layane. */
+export const mensagemTipo = [
+  "cobranca", // parcela / boleto / PIX
+  "contrato", // envio de contrato assinado
+  "orcamento", // proposta enviada
+  "conformidade", // relatório de conformidade
+  "documento", // qualquer documento avulso
+  "aviso", // aviso de vencimento, geral
+  "atendimento", // resposta a cliente
+] as const;
+export type MensagemTipo = (typeof mensagemTipo)[number];
+
+export const rotulosMensagem: Record<MensagemTipo, string> = {
+  cobranca: "Cobrança",
+  contrato: "Contrato",
+  orcamento: "Orçamento",
+  conformidade: "Conformidade",
+  documento: "Documento",
+  aviso: "Aviso",
+  atendimento: "Atendimento",
+};
+
+/**
+ * Quem recebe.
+ *
+ * `sistema` = a Layane (notificação interna).
+ * `cliente` = a contraparte.
+ */
+export const destinatarioTipo = ["sistema", "cliente"] as const;
+export type DestinatarioTipo = (typeof destinatarioTipo)[number];
+
+export const statusEnvio = [
+  "rascunho",
+  "fila", // aguardando envio
+  "enviando",
+  "enviado",
+  "falhou",
+  "lido",
+  "respondido",
+] as const;
+export type StatusEnvio = (typeof statusEnvio)[number];
+
+/**
+ * Uma linha da Central de Mensagens.
+ *
+ * Não é "log de e-mail": é a conversa. O que a Layane envia e o que o
+ * cliente responde ficam na mesma linha, ligados por `threadId`. Isso é
+ * o que a Layane pediu ao dizer que queria "receber e-mails" — não ver a
+ * caixa dela, mas ter a conversa no sistema onde ela trabalha.
+ */
+export const mensagens = sqliteTable("mensagens", {
+  id: text("id").primaryKey(),
+  /** Agrupa a conversa. Uma mensagem e suas respostas compartilham. */
+  threadId: text("thread_id").notNull(),
+
+  clienteId: text("cliente_id").references(() => clientes.id),
+  lancamentoId: text("lancamento_id").references(() => lancamentos.id),
+  contratoId: text("contrato_id").references(() => contratos.id),
+  orcamentoId: text("orcamento_id").references(() => orcamentos.id),
+  analiseId: text("analise_id").references(() => analisesConformidade.id),
+
+  tipo: text("tipo", { enum: mensagemTipo }).notNull().default("aviso"),
+  direcao: text("direcao", { enum: ["enviada", "recebida"] })
+    .notNull()
+    .default("enviada"),
+
+  destinatarioTipo: text("destinatarioTipo", {
+    enum: destinatarioTipo,
+  })
+    .notNull()
+    .default("cliente"),
+  paraNome: text("para_nome"),
+  paraEmail: text("para_email").notNull(),
+  /** Endereço de resposta — `reply-to` do envio. */
+  deNome: text("de_nome"),
+  deEmail: text("de_email"),
+
+  assunto: text("assunto").notNull(),
+  corpo: text("corpo"),
+  /** Texto em HTML já renderizado, se houver. */
+  corpoHtml: text("corpo_html"),
+
+  status: text("status", { enum: statusEnvio }).notNull().default("fila"),
+  tentativas: integer("tentativas").notNull().default(0),
+  ultimoErro: text("ultimo_erro"),
+  /** ID devolvido pelo provedor (Resend), para rastreio. */
+  provedorId: text("provedor_id"),
+  enviadoEm: text("enviado_em"),
+  lidoEm: text("lido_em"),
+
+  criadoPor: text("criado_por").references(() => usuarios.id),
+  criadoEm: text("criado_em").notNull().default(agora()),
+});
+
+/** Modelo de texto — o que a Layane edita uma vez e reusa. */
+export const modelosEmail = sqliteTable("modelos_email", {
+  id: text("id").primaryKey(),
+  tipo: text("tipo", { enum: mensagemTipo }).notNull(),
+  nome: text("nome").notNull(),
+  assunto: text("assunto").notNull(),
+  corpo: text("corpo").notNull(),
+  /** Placeholders aceitos, só para a Layane saber o que pode usar. */
+  variaveis: text("variaveis", { mode: "json" })
+    .$type<string[]>()
+    .notNull()
+    .default([]),
+  ativo: integer("ativo", { mode: "boolean" }).notNull().default(true),
+  criadoEm: text("criado_em").notNull().default(agora()),
+  atualizadoEm: text("atualizado_em").notNull().default(agora()),
+});
+
+/**
+ * Tentativas de login.
+ *
+ * Existe para duas coisas: barrar força bruta e mostrar à Layane que
+ * alguém está tentando entrar. Um login bem-sucedido invalida as falhas
+ * anteriores daquele e-mail.
+ */
+export const tentativasLogin = sqliteTable("tentativas_login", {
+  id: text("id").primaryKey(),
+  /** E-mail digitado (normalizado em minúsculas). */
+  email: text("email").notNull(),
+  ip: text("ip"),
+  sucesso: integer("sucesso", { mode: "boolean" }).notNull().default(false),
+  motivo: text("motivo"),
+  criadoEm: text("criado_em").notNull().default(agora()),
+});
+
 export const sessoes = sqliteTable(
   "sessoes",
   {

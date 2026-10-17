@@ -3,6 +3,7 @@ import Link from "next/link";
 import { alternarAcesso, criarUsuario, revogarSessoes, trocarMinhaSenha } from "@/actions/auth";
 import { FormNovoUsuario, FormTrocaSenha } from "@/components/forms/FormNovoUsuario";
 import { Icone } from "@/components/Icone";
+import { PainelSeguranca } from "@/components/PainelSeguranca";
 import { db } from "@/db";
 import { servicos, usuarios } from "@/db/schema";
 import { requireUsuario } from "@/lib/auth";
@@ -57,6 +58,11 @@ export default async function PaginaConfig() {
           <FormTrocaSenha />
         </div>
       </Painel>
+
+      {/* --- Segurança --- */}
+      {/* Só a administradora vê. A assistente não precisa saber quantas
+          vezes alguém tentou entrar na conta dela. */}
+      {admin && <PainelSeguranca />}
 
       {/* --- Acessos --- */}
       {admin && (

@@ -30,4 +30,21 @@ export const descricaoPapeis: Record<Papel, string> = {
     "Cadastra e edita clientes, registra atendimento, monta orçamento e dá baixa no financeiro. Não vê conformidade emitida nem configurações.",
 };
 
+/**
+ * O que a camada de proteção faz, em português claro.
+ *
+ * Fica aqui, e não dentro do componente, porque é conteúdo editorial que
+ * a Layane lê — não dado. E fica num módulo sem `server-only`, para o
+ * texto poder ser usado também na tela de login.
+ */
+export const PANEL_SEGURANCA_NOTAS: string[] = [
+  "Senha guardada com hash bcrypt de custo 12 — o sistema não sabe a sua senha, só sabe que confere.",
+  "Após 5 tentativas com senha errada, o acesso é bloqueado por 15 minutos.",
+  "20 tentativas vindas do mesmo endereço de rede também bloqueiam.",
+  "E-mail inexistente e senha errada devolvem a mesma resposta, no mesmo tempo.",
+  "Cookie de sessão httpOnly: o navegador guarda o token, o JavaScript da página não consegue ler.",
+  "Cabeçalhos que impedem o sistema de ser embedado em página falsa (clickjacking).",
+  "Cada consulta de tela é revalidada no servidor — editar o HTML não muda total, preço nem saldo.",
+];
+
 export type { Usuario, Papel };

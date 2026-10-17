@@ -18,6 +18,7 @@ import bcrypt from "bcryptjs";
 import { and, eq, gt, lt } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { cache } from "react";
 
 import { db } from "@/db";
 import {
@@ -86,8 +87,19 @@ async function limparExpiradas(): Promise<void> {
   await db.delete(sessoes).where(lt(sessoes.expiraEm, new Date().toISOString()));
 }
 
-/** Usuário da requisição atual, ou `null`. Nunca redireciona. */
-export async function getUsuario(): Promise<Usuario | null> {
+/**
+ * Usuário da requisição atual, ou `null`. Nunca redireciona.
+ *
+ * Envolta em `cache()` do React de propósito. O layout chama `getUsuario()`
+ * para montar os contadores da barra, e a página chama `requireUsuario()` —
+ * sem memoização são DUAS leituras de `cookies()` na mesma requisição, e a
+ * leitura de cookie custava mais que a consulta ao banco (medido: 68ms de
+ * cookie contra 4ms de query). `cache()` garante uma execução por request.
+ *
+ * NOTA: o cache é do React e vale só dentro de uma renderização. Não usar
+ * como se fosse cache entre requisições.
+ */
+async function buscarUsuario(): Promise<Usuario | null> {
   const jar = await cookies();
   const token = jar.get(COOKIE)?.value;
   if (!token) return null;
@@ -103,9 +115,14 @@ export async function getUsuario(): Promise<Usuario | null> {
   if (!achada) return null;
   if (!achada.usuario.ativo) return null;
 
-  void limparExpiradas();
+  // Faxina oportunista: a rota de leitura continua sendo só leitura. A
+  // limpeza roda quando a chance cai (1 em 20), não em toda requisição.
+  if (Math.random() < 0.05) void limparExpiradas();
+
   return achada.usuario;
 }
+
+export const getUsuario = cache(buscarUsuario);
 
 /** Igual `getUsuario`, mas redireciona para o login se não houver sessão. */
 export async function requireUsuario(): Promise<Usuario> {

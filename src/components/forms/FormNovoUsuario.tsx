@@ -4,6 +4,7 @@ import { useActionState } from "react";
 
 import { criarUsuario, trocarMinhaSenha, type EstadoForm as Estado } from "@/actions/auth";
 import { BotaoEnviar } from "@/components/BotaoEnviar";
+import { CampoSenha } from "@/components/CampoSenha";
 import { Icone } from "@/components/Icone";
 import { Aviso, Campo } from "@/components/ui";
 
@@ -28,9 +29,7 @@ export function FormNovoUsuario() {
           <input id="cargo" name="cargo" className="field" placeholder="Administrativo" />
         </Campo>
 
-        <Campo rotulo="Senha inicial" htmlFor="senha" obrigatorio dica="Mínimo 8 caracteres.">
-          <input id="senha" name="senha" type="text" required minLength={8} className="field" />
-        </Campo>
+        <CampoSenha nome="senha" rotulo="Senha inicial" obrigatorio />
 
         <Campo rotulo="Papel" htmlFor="papel" className="lg:col-span-2">
           <select id="papel" name="papel" defaultValue="assistente" className="field">
@@ -69,12 +68,19 @@ export function FormTrocaSenha() {
       )}
 
       <Campo rotulo="Senha atual" htmlFor="atual" obrigatorio className="w-[200px]">
-        <input id="atual" name="atual" type="password" required className="field" />
+        <input
+          id="atual"
+          name="atual"
+          type="password"
+          required
+          autoComplete="current-password"
+          className="field"
+        />
       </Campo>
 
-      <Campo rotulo="Nova senha" htmlFor="nova" obrigatorio className="w-[200px]">
-        <input id="nova" name="nova" type="password" required minLength={8} className="field" />
-      </Campo>
+      <div className="w-[240px]">
+        <CampoSenha nome="nova" rotulo="Nova senha" obrigatorio />
+      </div>
 
       <BotaoEnviar variante="secundario">Trocar senha</BotaoEnviar>
     </form>

@@ -185,11 +185,14 @@ export function Painel({
 export function LinhaDado({
   rotulo,
   valor,
+  detalhe,
   tom,
   className,
 }: {
   rotulo: ReactNode;
   valor: ReactNode;
+  /** Explicação curta do que o número significa, abaixo do valor. */
+  detalhe?: ReactNode;
   tom?: Tom;
   className?: string;
 }) {
@@ -201,15 +204,24 @@ export function LinhaDado({
       )}
     >
       <span className="label shrink-0">{rotulo}</span>
-      <span
-        className={cn(
-          "min-w-0 text-right text-[0.9375rem] tnum",
-          tom === "danger" && "text-danger",
-          tom === "warn" && "text-warn",
-          tom === "ok" && "text-ok",
+      {/* Valor e detalhe na mesma coluna, alinhados à direita — senão o
+          detalhe passaria por baixo da linha e a leitura quebraria. */}
+      <span className="flex min-w-0 flex-col items-end gap-1 text-right">
+        <span
+          className={cn(
+            "min-w-0 text-[0.9375rem] tnum",
+            tom === "danger" && "text-danger",
+            tom === "warn" && "text-warn",
+            tom === "ok" && "text-ok",
+          )}
+        >
+          {valor}
+        </span>
+        {detalhe && (
+          <span className="max-w-[46ch] text-[0.75rem] leading-relaxed text-faint">
+            {detalhe}
+          </span>
         )}
-      >
-        {valor}
       </span>
     </div>
   );
