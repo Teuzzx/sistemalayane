@@ -6,6 +6,19 @@
  * dentro de uma serverless function, que é criada e destruída o tempo
  * todo. Criar o `Pool` não abre conexão — a primeira socket só sai
  * quando a primeira query roda.
+ *
+ * ATENÇÃO à porta do pooler do Supabase:
+ *
+ *   5432 → modo sessão. Cada cliente segura uma conexão dedicada até
+ *          encerrar, e o teto é `pool_size` (20 no plano gratuito). Como
+ *          a serverless abre um pool por instância, esse modo esgota em
+ *          minutos de uso normal e as telas passam a subir com erro.
+ *   6543 → modo transação. A conexão é emprestada por transação e
+ *          devolvida em seguida, que é o modo certo para serverless.
+ *
+ * A conexão usada é a que tem `6543` na URL. Nada aqui usa statement
+ * nomeado nem transação que atravessa requisições, então o modo transação
+ * é compatível de ponta a ponta.
  */
 
 import { drizzle } from "drizzle-orm/node-postgres";
@@ -45,11 +58,23 @@ const conexao = semSslmode(bruto);
  * propósito. A tentativa de conexão só acontece se alguma consulta rodar
  * mesmo assim, e o erro que sobe é de socket — não a mensagem que
  * explica o que fazer. Quem explica é `BancoNaoConfigurado`, na tela.
+ *
+ * `max: 2` e não 10. Cada instância de serverless function cria o seu
+ * próprio pool, e o pooler do Supabase limita o total de clientes: com
+ * 10 por instância, duas instâncias concorrentes já esgotavam o pooler
+ * (`EMAXCONNSESSION: max clients reached`) e as telas seguintes subiam
+ * com erro de servidor. Duas conexões por instância bastam para as
+ * consultas paralelas do painel e mantêm a conta longe do teto.
+ *
+ * `connectionTimeoutMillis` existe para o erro ser um erro — e não uma
+ * tela travada esperando um socket que nunca abre.
  */
 export const pool = new Pool({
   connectionString: conexao || "postgresql://postgres:postgres@127.0.0.1:1/ningum",
   ssl: /localhost|127\.0\.0\.1/.test(conexao) ? undefined : { rejectUnauthorized: false },
-  max: 10,
+  max: 2,
+  connectionTimeoutMillis: 10_000,
+  idleTimeoutMillis: 10_000,
 });
 
 export const db = drizzle(pool, { schema });
