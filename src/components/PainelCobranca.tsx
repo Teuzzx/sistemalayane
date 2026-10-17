@@ -59,8 +59,16 @@ function Rascunho() {
   );
 }
 
-/** Carrega a prévia. Roda só quando a Layane aperta o botão. */
-function BotaoPrevia() {
+/**
+ * Cartão de cobrança em lote.
+ *
+ * Fica inteiro no cliente, sem casca de servidor: os dados chegam pela
+ * `prepararCobranca`, chamada no clique. Envolver isto num `async
+ * function` não funciona — o arquivo já é `"use client"`, e o Next
+ * rejeita componente assíncrono do lado do cliente com "Only Server
+ * Components can be async".
+ */
+export function PainelCobranca() {
   const [plano, setPlano] = useState<Plano | null>(null);
   const [carregando, setCarregando] = useState(false);
   const [estado, formAction] = useActionState(cobrarSelecionados, ESTADO_INICIAL);
@@ -192,14 +200,4 @@ function BotaoPrevia() {
       )}
     </Painel>
   );
-}
-
-/**
- * Casca de servidor.
- *
- * Server Component para que `prepararCobranca` (que toca o banco) não
- * vire código de cliente. O filho é client porque precisa de estado.
- */
-export async function PainelCobranca() {
-  return <BotaoPrevia />;
 }
