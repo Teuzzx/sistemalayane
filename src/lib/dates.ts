@@ -18,8 +18,36 @@ const MESES_CURTO = [
 
 const DIAS = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
 
+/**
+ * O fuso em que o sistema pensa.
+ *
+ * A Layane trabalha no Brasil; o servidor da Vercel roda em UTC. Perguntar a
+ * data "local" ao processo dava respostas diferentes dos dois lados: entre
+ * 21h e a meia-noite o UTC já virou o dia. Isso aparecia de três formas —
+ * o React quebrava a hidratação (o servidor mandava "há 1 dia" e o navegador
+ * pintava "hoje"), formulário vinha pré-preenchido com a data de amanhã, e
+ * boleto com vencimento hoje entrava na conta de atrasado.
+ */
+const FUSO_BR = "America/Sao_Paulo";
+
+const DATA_BR = new Intl.DateTimeFormat("en-CA", {
+  timeZone: FUSO_BR,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
+/**
+ * Data de hoje (`YYYY-MM-DD`) no fuso do Brasil.
+ *
+ * Ancorada no fuso, e não no relógio da máquina, de propósito: é o que faz
+ * servidor e navegador — que vivem em fusos diferentes — responderem a MESMA
+ * data. Sem isso, todo texto derivado do relógio divergia na hidratação.
+ */
 export function hoje(): string {
-  return paraISO(new Date());
+  const partes = DATA_BR.formatToParts(new Date());
+  const valor = (tipo: string) => partes.find((p) => p.type === tipo)?.value ?? "";
+  return `${valor("year")}-${valor("month")}-${valor("day")}`;
 }
 
 /** `Date` → `"YYYY-MM-DD"` no fuso local (não UTC — isso buga dia anterior). */
@@ -144,7 +172,9 @@ export function anosDisponiveis(
   valores: (string | null | undefined)[],
 ): number[] {
   const anos = new Set(valores.filter(Boolean).map((v) => Number(v!.slice(0, 4))));
-  if (anos.size === 0) anos.add(new Date().getFullYear());
+  /* `hoje()` e não `new Date()`: o ano corrente é o do Brasil, igual nos
+     dois lados da hidratação. */
+  if (anos.size === 0) anos.add(Number(hoje().slice(0, 4)));
   return [...anos].sort((a, b) => b - a);
 }
 

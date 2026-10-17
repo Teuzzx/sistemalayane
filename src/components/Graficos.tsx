@@ -5,6 +5,7 @@
  * (meses fracos, meses cheios); o número exato mora no topo do painel.
  */
 
+import { hoje } from "@/lib/dates";
 import { brlCompacto } from "@/lib/money";
 
 type Ponto = { mes: string; rotulo: string; valor: number };
@@ -17,7 +18,9 @@ export function Barras({
   altura?: number;
 }) {
   const maximo = Math.max(...dados.map((d) => d.valor), 1);
-  const mesAtual = new Date().toISOString().slice(0, 7);
+  /* `hoje()` (fuso do Brasil) e não `toISOString()` (UTC): na virada do mês o
+     UTC já está no mês seguinte, e a barra destacada seria a errada. */
+  const mesAtual = hoje().slice(0, 7);
 
   /* ViewBox em PIXELS, não em unidade de viewBox: com `width: 100%` e
      altura automática, um viewBox de 100×174 esticava a altura do painel

@@ -11,7 +11,7 @@
  * com string de data pura.
  */
 
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
   dataExtensoLonga,
@@ -172,15 +172,42 @@ describe("janelaMeses", () => {
 });
 
 describe("hoje", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("devolve a data no padrão do sistema", () => {
     expect(hoje()).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 
-  it("devolve a data local, não a de UTC", () => {
-    /* `toISOString()` aqui marcaria a data de amanhã para quem trabalha
-       à noite no Brasil. */
-    const agora = new Date();
-    const esperado = `${agora.getFullYear()}-${String(agora.getMonth() + 1).padStart(2, "0")}-${String(agora.getDate()).padStart(2, "0")}`;
-    expect(hoje()).toBe(esperado);
+  it("devolve a data do Brasil, não a de UTC", () => {
+    /* 02h UTC do dia 17 ainda é 23h do dia 16 no Brasil. O servidor da
+       Vercel roda em UTC e o navegador da Layane no Brasil: se `hoje()`
+       dependesse do relógio da máquina, os dois discordariam — e o React
+       quebra a hidratação quando o texto do servidor não bate com o do
+       cliente (era o erro #418 que aparecia no financeiro toda noite). */
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-10-17T02:00:00Z"));
+    expect(hoje()).toBe("2026-10-16");
+  });
+
+  it("vira o dia junto com o Brasil, não com o UTC", () => {
+    vi.useFakeTimers();
+    /* 23h30 do dia 16 — em UTC já é dia 17, no Brasil ainda não. */
+    vi.setSystemTime(new Date("2026-10-17T02:30:00Z"));
+    expect(hoje()).toBe("2026-10-16");
+    /* 00h30 do dia 17 no Brasil — aí sim virou. */
+    vi.setSystemTime(new Date("2026-10-17T03:30:00Z"));
+    expect(hoje()).toBe("2026-10-17");
+  });
+
+  it("vira no segundo exato da meia-noite do Brasil", () => {
+    /* A fronteira é 03:00 UTC (00:00 em São Paulo, UTC-3 o ano inteiro —
+       o Brasil não tem mais horário de verão). */
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-10-17T02:59:59Z"));
+    expect(hoje()).toBe("2026-10-16");
+    vi.setSystemTime(new Date("2026-10-17T03:00:00Z"));
+    expect(hoje()).toBe("2026-10-17");
   });
 });
