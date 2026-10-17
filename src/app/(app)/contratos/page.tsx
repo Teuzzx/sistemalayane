@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { exigirSecao } from "@/lib/exigir";
 
 import { Icone } from "@/components/Icone";
 import { rotulosStatusContrato } from "@/db/schema";
@@ -28,6 +29,8 @@ export default async function PaginaContratos({
 }: {
   searchParams: Promise<{ status?: string }>;
 }) {
+  await exigirSecao("contratos");
+
   const { status } = await searchParams;
   const contratos = await listarContratos({ status });
 
@@ -88,7 +91,7 @@ export default async function PaginaContratos({
           titulo={`${contratos.length} contrato${contratos.length === 1 ? "" : "s"}`}
           descricao={
             ativos.length > 0
-              ? `Carteira ativa: ${ativos.length} contrato(s), ${brl(valorCarteira)} em signing`
+              ? `Carteira ativa: ${ativos.length} contrato${ativos.length === 1 ? "" : "s"}, ${brl(valorCarteira)} em carteira`
               : undefined
           }
         >

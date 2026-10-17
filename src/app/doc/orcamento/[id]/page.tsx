@@ -1,5 +1,6 @@
 import { DocOrcamento } from "@/components/docs/DocOrcamento";
 import { and, eq } from "drizzle-orm";
+import { exigirSecao } from "@/lib/exigir";
 
 import { db } from "@/db";
 import { orcamentos, clientes } from "@/db/schema";
@@ -13,6 +14,8 @@ export default async function PaginaDocOrcamento({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await exigirSecao("orcamentos");
+
   const { id } = await params;
   const dados = await detalheOrcamento(id);
   if (!dados) notFound();

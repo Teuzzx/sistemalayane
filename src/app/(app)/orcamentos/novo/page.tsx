@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { exigirSecao } from "@/lib/exigir";
 
 import { FormOrcamento } from "@/components/forms/FormOrcamento";
 import { Icone } from "@/components/Icone";
@@ -12,6 +13,8 @@ export default async function PaginaNovoOrcamento({
 }: {
   searchParams: Promise<{ clienteId?: string }>;
 }) {
+  await exigirSecao("orcamentos");
+
   const { clienteId } = await searchParams;
   const clientes = await listarClientes({});
 

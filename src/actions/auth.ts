@@ -6,15 +6,17 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { db } from "@/db";
-import { sessoes, usuarios } from "@/db/schema";
+import { papelAdmin, sessoes, usuarios } from "@/db/schema";
 import {
   criarSessao,
   destruirSessao,
   hashSenha,
   requireAdmin,
+  requireUsuario,
   verificarSenha,
 } from "@/lib/auth";
 import { novoId } from "@/lib/ids";
+import { SECOES, type Secao } from "@/lib/permissoes";
 import { avaliarSenha } from "@/lib/senha";
 import { ipDoCliente, limpar, registrar, situacao } from "@/lib/seguranca";
 
@@ -118,6 +120,17 @@ export async function criarUsuario(
   }
   const { nome, email, cargo, papel, senha } = checado.data;
 
+  /* Um checkbox marcado vem como `permissoes=clientes`; um desmarcado
+     simplesmente não vem. Ler o `FormData` direto em vez do objeto já
+     validado pelo Zod é de propósito: `Object.fromEntries` guardaria só
+     o último valor, e aqui interessa a lista inteira. */
+  const pedidos = formData
+    .getAll("permissoes")
+    .map(String)
+    .filter((s): s is Secao => (SECOES as readonly string[]).includes(s));
+
+  const permissoes = papel === papelAdmin ? [] : pedidos;
+
   const forca = avaliarSenha(senha);
   if (!forca.ok) {
     return { erro: `Senha fraca: ${forca.problemas.join(" ")}` };
@@ -140,10 +153,57 @@ export async function criarUsuario(
     papel,
     senhaHash: await hashSenha(senha),
     ativo: true,
+    permissoes,
   });
 
   revalidatePath("/config");
-  return { ok: `Acesso de ${nome} criado.` };
+  return {
+    ok:
+      papel === papelAdmin
+        ? `Acesso de ${nome} criado com acesso total.`
+        : `Acesso de ${nome} criado com ${permissoes.length} de ${SECOES.length} seções.`,
+  };
+}
+
+/**
+ * Troca as seções de um acesso que já existe.
+ *
+ * Recusa mexer em admin e recusa mexer em si mesma fora do papel: sem
+ * essas duas travas, um erro de clique deixaria a Layane sem acesso a
+ * nada e a correção exigiria entrar no banco por fora.
+ */
+export async function salvarPermissoes(
+  _estado: EstadoForm,
+  formData: FormData,
+): Promise<EstadoForm> {
+  const eu = await requireAdmin();
+
+  const id = String(formData.get("id") ?? "");
+  if (!id) return { erro: "Acesso não informado." };
+  if (id === eu.id) {
+    return { erro: "Você não pode mudar as próprias permissões." };
+  }
+
+  const alvo = await db
+    .select({ nome: usuarios.nome, papel: usuarios.papel })
+    .from(usuarios)
+    .where(eq(usuarios.id, id))
+    .limit(1);
+  if (!alvo.length) return { erro: "Acesso não encontrado." };
+  if (alvo[0].papel === papelAdmin) {
+    return { erro: "Administradora tem acesso total — não há o que marcar." };
+  }
+
+  const pedidos = formData
+    .getAll("permissoes")
+    .map(String)
+    .filter((s): s is Secao => (SECOES as readonly string[]).includes(s));
+
+  await db.update(usuarios).set({ permissoes: pedidos }).where(eq(usuarios.id, id));
+
+  revalidatePath("/config");
+  revalidatePath("/painel");
+  return { ok: `Permissões de ${alvo[0].nome} atualizadas.` };
 }
 
 /** Liga/desliga um acesso. Desligar derruba as sessões abertas da pessoa. */
@@ -200,12 +260,20 @@ export async function revogarSessoes(formData: FormData): Promise<void> {
   revalidatePath("/config");
 }
 
-/** A própria pessoa trocando a própria senha. */
+/**
+ * A própria pessoa trocando a própria senha.
+ *
+ * Exige só estar com a sessão aberta, e não papel de admin: a função
+ * escreve exclusivamente em `eu.id`, a conta de quem está chamando. Com
+ * `requireAdmin()` aqui, a assistente via o formulário — que a tela de
+ * configurações mostra para qualquer pessoa — e voltava um
+ * "sem permissão" sem trocar nada.
+ */
 export async function trocarMinhaSenha(
   _estado: EstadoForm,
   formData: FormData,
 ): Promise<EstadoForm> {
-  const eu = await requireAdmin();
+  const eu = await requireUsuario();
   const atual = String(formData.get("atual") ?? "");
   const nova = String(formData.get("nova") ?? "");
 

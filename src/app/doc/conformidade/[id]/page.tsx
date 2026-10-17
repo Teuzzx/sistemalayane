@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { exigirSecao } from "@/lib/exigir";
 
 import { DocConformidade } from "@/components/docs/DocConformidade";
 import { detalheAnalise } from "@/lib/consultas";
@@ -13,7 +14,7 @@ export default async function PaginaDocConformidade({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await requireAdmin();
+  await exigirSecao("conformidade");
   const { id } = await params;
   const dados = await detalheAnalise(id);
   if (!dados) notFound();

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { exigirSecao } from "@/lib/exigir";
 
 import { FormContrato } from "@/components/forms/FormContrato";
 import { Icone } from "@/components/Icone";
@@ -12,6 +13,8 @@ export default async function PaginaNovoContrato({
 }: {
   searchParams: Promise<{ clienteId?: string }>;
 }) {
+  await exigirSecao("contratos");
+
   const { clienteId } = await searchParams;
   const clientes = await listarClientes({});
 

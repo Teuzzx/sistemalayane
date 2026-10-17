@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { requireUsuario } from "@/lib/auth";
+import { podeAcessar, ROTULO_SECAO, type Secao } from "@/lib/permissoes";
 import {
   anosComMovimento,
   documentosVencendo,
@@ -31,10 +32,30 @@ export const metadata = { title: "Painel" };
 export default async function PaginaPainel({
   searchParams,
 }: {
-  searchParams: Promise<{ ano?: string }>;
+  searchParams: Promise<{ ano?: string; erro?: string }>;
 }) {
   const eu = await requireUsuario();
-  const { ano: anoParam } = await searchParams;
+  const { ano: anoParam, erro } = await searchParams;
+
+  /*
+   * O painel é a página de todo mundo, então cada bloco pergunta antes
+   * de mostrar. Sem isto, esconder "Financeiro" da lateral não servia
+   * para nada: a pessoa entrava, via a receita do ano no próprio painel,
+   * e saía com o número que a permissão dizia não poder ver.
+   */
+  const verFin = podeAcessar(eu, "financeiro");
+  const verCli = podeAcessar(eu, "clientes");
+  const verContratos = podeAcessar(eu, "contratos");
+  const verDocumentos = podeAcessar(eu, "documentos");
+  const verDemandas = podeAcessar(eu, "demandas");
+
+  /* `sem-acesso-<secao>` é o redirect de `exigirSecao`. Vir aqui sem
+     ver nada é confuso, então o motivo vai escrito na tela. */
+  const semAcesso = erro?.startsWith("sem-acesso-")
+    ? ROTULO_SECAO[erro.slice("sem-acesso-".length) as Secao]
+    : erro === "sem-permissao"
+      ? "Esta área é restrita à administração."
+      : null;
 
   const anos = await anosComMovimento();
   const ano = anoParam && anos.includes(Number(anoParam)) ? Number(anoParam) : anos[0];
@@ -63,6 +84,17 @@ export default async function PaginaPainel({
 
   return (
     <div className="flex flex-col gap-6">
+      {semAcesso && (
+        <div
+          role="alert"
+          className="rounded-xl border border-warn/30 bg-warn/8 px-4 py-3 text-[0.875rem] leading-relaxed"
+        >
+          <strong className="font-500 text-warn">{semAcesso}</strong> não faz
+          parte do seu acesso. Peça à Layane para incluir esta seção em
+          Configurações → Permissões por acesso.
+        </div>
+      )}
+
       <CabecalhoPagina
         titulo={`${saudacao}, ${primeiroNome}`}
         descricao="A situação da carteira hoje: o que entrou, o que falta entrar, o que está vencendo e o que está em movimento."
@@ -80,6 +112,7 @@ export default async function PaginaPainel({
       {!temDados && <PrimeiroUso />}
 
       {/* ---------- HERÓI: a receita do ano ---------- */}
+      {verFin && (
       <div className="grid items-start gap-4 xl:grid-cols-[1.55fr_1fr]">
         <Painel
           className="animar"
@@ -145,6 +178,7 @@ export default async function PaginaPainel({
           </Link>
         </Painel>
       </div>
+      )}
 
       {/* ---------- Números de operação ---------- */}
       <div className="grupo grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -152,20 +186,20 @@ export default async function PaginaPainel({
           rotulo="Clientes ativos"
           valor={resumo.clientesAtivos}
           detalhe={`${resumo.potenciais} potenciais na carteira`}
-          href="/clientes"
+          href={verCli ? "/clientes" : undefined}
         />
         <Estatistica
           rotulo="Contratos em vigor"
           valor={resumo.contratosAtivos}
           detalhe="assinados ou ativos"
-          href="/contratos"
+          href={verContratos ? "/contratos" : undefined}
         />
         <Estatistica
           rotulo="Documentos a vencer"
           valor={resumo.docsVencendo}
           detalhe="licenças e certidões"
           tom={resumo.docsVencendo > 0 ? "warn" : undefined}
-          href="/documentos"
+          href={verDocumentos ? "/documentos" : undefined}
         />
         <Estatistica
           rotulo="Atendimentos no mês"
@@ -176,6 +210,7 @@ export default async function PaginaPainel({
 
       {/* ---------- Filas de trabalho ---------- */}
       <div className="grid items-start gap-4 lg:grid-cols-2">
+        {verFin && (
         <Painel
           titulo="Próximas contas"
           descricao="O que precisa ser cobrado."
@@ -217,7 +252,9 @@ export default async function PaginaPainel({
             </ul>
           )}
         </Painel>
+        )}
 
+        {verDocumentos && (
         <Painel
           titulo="Documentos a vencer"
           descricao="Licenças, autorizações e certidões com prazo no fim."
@@ -255,9 +292,11 @@ export default async function PaginaPainel({
             </ul>
           )}
         </Painel>
+        )}
       </div>
 
       <div className="grid items-start gap-4 lg:grid-cols-2">
+        {verCli && (
         <Painel titulo="Próximos passos combinados" descricao="O que ficou de combinado.">
           {passos.length === 0 ? (
             <Vazio
@@ -290,7 +329,9 @@ export default async function PaginaPainel({
             </ul>
           )}
         </Painel>
+        )}
 
+        {verDemandas && (
         <Painel
           titulo="Funil de demandas"
           descricao="Onde cada cliente está na jornada."
@@ -298,9 +339,10 @@ export default async function PaginaPainel({
         >
           <Funil etapas={funilDados} />
         </Painel>
+        )}
       </div>
 
-      {ranking.length > 0 && (
+      {verFin && ranking.length > 0 && (
         <Painel
           titulo={`Quem mais pagou em ${ano}`}
           descricao="Concentração de receita por cliente."

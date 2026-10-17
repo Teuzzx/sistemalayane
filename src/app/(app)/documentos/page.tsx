@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { exigirSecao } from "@/lib/exigir";
 
 import { FormDocumento } from "@/components/forms/FormDocumento";
 import { Icone } from "@/components/Icone";
@@ -32,6 +33,8 @@ export default async function PaginaDocumentos({
     texto?: string;
   }>;
 }) {
+  await exigirSecao("documentos");
+
   const { clienteId, novo, texto } = await searchParams;
   const params = await searchParams;
   const janelaBruta = params.janela;

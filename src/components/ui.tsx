@@ -162,7 +162,11 @@ export function Painel({
       )}
     >
       {(titulo || acoes) && (
-        <header className="mb-4 flex items-start justify-between gap-4">
+        /* Empilha no mobile. Com `justify-between` em linha única, um
+           botão de texto longo espremeva o título até uma palavra por
+           linha — e um grupo de filtros dentro de `acoes` transbordava
+           pela borda. Em coluna, cada um ganha a linha inteira. */
+        <header className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
           <div className="min-w-0">
             {titulo && (
               <h2 className="text-[0.9375rem] font-600 tracking-[-0.004em]">
@@ -173,7 +177,11 @@ export function Painel({
               <p className="mt-0.5 text-[0.8125rem] text-muted">{descricao}</p>
             )}
           </div>
-          {acoes && <div className="flex shrink-0 items-center gap-2">{acoes}</div>}
+          {acoes && (
+            <div className="flex flex-wrap items-center gap-2 sm:shrink-0">
+              {acoes}
+            </div>
+          )}
         </header>
       )}
       {children}
@@ -491,7 +499,10 @@ export function Aviso({
         estilo,
       )}
     >
-      {children}
+      {/* O conteúdo vai dentro de um bloco. Sem este wrapper, cada filho
+          (<strong>, texto solto, outro <strong>) vira uma coluna do
+          flex e o aviso sai cortado em blocos lado a lado. */}
+      <div className="min-w-0 flex-1">{children}</div>
     </div>
   );
 }

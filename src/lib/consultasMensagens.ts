@@ -13,7 +13,7 @@ import "server-only";
 import { and, count, desc, eq, inArray, sql } from "drizzle-orm";
 
 import { db } from "@/db";
-import { clientes, mensagens } from "@/db/schema";
+import { clientes, lancamentos, mensagens } from "@/db/schema";
 import type { MensagemTipo, StatusEnvio } from "@/db/schema";
 import type { LinhaCobranca } from "@/lib/email/cobranca";
 
@@ -141,18 +141,18 @@ export async function linhasParaCobranca(): Promise<LinhaCobranca[]> {
 
   const linhas = await db
     .select({
-      lancamentoId: sql<string>`lanc.id`,
-      descricao: sql<string>`lanc.descricao`,
-      valorCentavos: sql<number | null>`lanc.valor`,
-      vencimento: sql<string>`lanc.vencimento`,
-      status: sql<"pendente" | "pago" | "atrasado" | "cancelado">`lanc.status`,
-      clienteId: sql<string>`lanc.cliente_id`,
-      clienteNome: sql<string>`cli.nome`,
-      emailCliente: sql<string | null>`cli.contato_email`,
+      lancamentoId: lancamentos.id,
+      descricao: lancamentos.descricao,
+      valorCentavos: lancamentos.valor,
+      vencimento: lancamentos.vencimento,
+      status: lancamentos.status,
+      clienteId: lancamentos.clienteId,
+      clienteNome: clientes.nome,
+      emailCliente: clientes.contatoEmail,
     })
-    .from(sql`lancamentos lanc`)
-    .innerJoin(sql`clientes cli`, sql`cli.id = lanc.cliente_id`)
-    .where(inArray(sql`lanc.status`, ["pendente", "atrasado"]));
+    .from(lancamentos)
+    .innerJoin(clientes, eq(lancamentos.clienteId, clientes.id))
+    .where(inArray(lancamentos.status, ["pendente", "atrasado"]));
 
   /* Uma linha por lançamento: o join por cliente é 1:1, mas sem isso
      o mesmo lançamento apareceria repetido se o cliente tivesse mais

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { exigirSecao } from "@/lib/exigir";
 
 import { mudarStatusOrcamento } from "@/actions/comercial";
 import { ConverterContrato } from "@/components/ConverterContrato";
@@ -18,6 +19,8 @@ import {
 } from "@/components/ui";
 
 export default async function PaginaOrcamento({ params }: { params: Promise<{ id: string }> }) {
+  await exigirSecao("orcamentos");
+
   const { id } = await params;
   const dados = await detalheOrcamento(id);
   if (!dados) notFound();

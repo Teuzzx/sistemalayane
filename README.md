@@ -4,17 +4,33 @@ Sistema de operação para a Layane: clientes, histórico de atendimento,
 funil de demandas, vencimentos, financeiro, orçamento, contrato e relatório
 de conformidade.
 
-Mesma identidade visual do site institucional da Layane: verde-oliva da
-logo, tipografia Barlow Semi Condensed, vidro sobre fundo de território
-cinematográfico.
+Mesma identidade visual do site institucional (`DESIGN_DNA.md` na raiz do
+repositório): verde-oliva da logo, tipografia Barlow Semi Condensed, vidro
+sobre fundo de território cinematográfico.
 
 ---
+
+## Banco de dados
+
+Postgres no Supabase. Copie `.env.example` para `.env.local` e cole a
+connection string:
+
+```bash
+cp .env.example .env.local
+# edite e cole a string em DATABASE_URL
+```
+
+Onde pegar: **Supabase → Project Settings → Database → Connection string →
+URI**. Pode deixar o `?sslmode=require` que vem no fim — o código tira o
+parâmetro e cuida do TLS sozinho.
+
+Sem `DATABASE_URL` o sistema mostra uma tela explicando o que falta, em
+vez de um 500 sem texto.
 
 ## Rodando local
 
 ```bash
 npm install
-cp .env.example .env.local     # opcional — sem isso o SQLite local já funciona
 npm run setup                   # cria as tabelas e popula o conteúdo inicial
 npm run dev
 ```
@@ -46,9 +62,6 @@ contrato ou valor.
 | `npm run build` | Build de produção |
 | `npm run start` | Sobe o build de produção (porta 3100) |
 | `npm run typecheck` | TypeScript sem emitir |
-| `npm run lint` | ESLint |
-| `npm run test` | Testes (Vitest) |
-| `npm run verify` | typecheck + lint + testes, o portão antes de commitar |
 | `npm run db:migrate` | Aplica as migrations |
 | `npm run db:seed` | Popula acessos, serviços e questionário |
 | `npm run db:generate` | Gera migration a partir do schema |

@@ -1,9 +1,12 @@
 import { FormCliente } from "@/components/forms/FormCliente";
 import { CabecalhoPagina } from "@/components/ui";
+import { exigirSecao } from "@/lib/exigir";
 
 export const metadata = { title: "Novo cliente" };
 
-export default function PaginaNovoCliente() {
+export default async function PaginaNovoCliente() {
+  await exigirSecao("clientes");
+
   return (
     <div className="mx-auto flex w-full max-w-[760px] flex-col gap-7">
       <CabecalhoPagina

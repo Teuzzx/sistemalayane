@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { exigirSecao } from "@/lib/exigir";
 
 import { FormCliente } from "@/components/forms/FormCliente";
 import { detalheCliente } from "@/lib/consultas";
@@ -11,6 +12,8 @@ export default async function PaginaEditarCliente({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await exigirSecao("clientes");
+
   const { id } = await params;
   const dados = await detalheCliente(id);
   if (!dados) notFound();

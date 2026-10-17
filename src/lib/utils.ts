@@ -1,3 +1,4 @@
+import { type SQL, sql } from "drizzle-orm";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -78,4 +79,26 @@ export function normalizar(texto: unknown): string {
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .trim();
+}
+
+/**
+ * Versão para uso DENTRO de um template `sql` do Drizzle.
+ *
+ * O `normalizar()` acima não serve aqui, e a diferença é o motivo de esta
+ * função existir. Numa query, o Drizzle trata cada interpolação de três
+ * jeitos: se for um `SQL`, cola o SQL; se for uma `Column`, escreve a
+ * referência da coluna; qualquer outra coisa vira PARÂMETRO ligado.
+ *
+ * `normalizar(clientes.nome)` devolve uma string, então caía no terceiro
+ * caso e a consulta saía como `where ($1 like $2)` — comparando a string
+ * `'[object object]'` com o termo digitado. Compilava, não reclamava, e
+ * a busca não trazia nada.
+ *
+ * Aqui a coluna volta para o Drizzle como coluna, e a remoção de acento
+ * acontece dentro do Postgres, via `unaccent`. Precisa da extensão:
+ *
+ *     create extension if not exists unaccent;
+ */
+export function semAcento(coluna: unknown) {
+  return sql`unaccent(lower(${coluna as SQL}))`;
 }

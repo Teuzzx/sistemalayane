@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { exigirSecao } from "@/lib/exigir";
 
 import { listarClientes } from "@/lib/consultas";
 import { rotulosStatusCliente, type ClienteStatus } from "@/db/schema";
@@ -18,6 +19,8 @@ export default async function PaginaClientes({
 }: {
   searchParams: Promise<{ busca?: string; status?: string }>;
 }) {
+  await exigirSecao("clientes");
+
   const { busca, status } = await searchParams;
 
   const clientes = await listarClientes({

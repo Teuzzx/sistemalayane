@@ -30,8 +30,9 @@ const csp = [
 ].join("; ");
 
 const nextConfig: NextConfig = {
-  // libSQL carrega binding nativo — deixa fora do bundle do server components.
-  serverExternalPackages: ["@libsql/client", "bcryptjs"],
+  // `pg` carrega binding nativo e o `bcryptjs` é nativo também — fora do
+  // bundle dos server components.
+  serverExternalPackages: ["pg", "bcryptjs"],
   // O `next dev` regenera AGENTS.md/CLAUDE.md a cada boot; esse projeto
   // não usa esses arquivos e eles sujam o diff.
   agentRules: false,

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { exigirSecao } from "@/lib/exigir";
 
 import { Icone } from "@/components/Icone";
 import { rotulosStatusConformidade } from "@/db/schema";
@@ -26,6 +27,8 @@ export default async function PaginaConformidade({
 }: {
   searchParams: Promise<{ status?: string }>;
 }) {
+  await exigirSecao("conformidade");
+
   const { status } = await searchParams;
   const analises = await listarAnalises({ status });
 

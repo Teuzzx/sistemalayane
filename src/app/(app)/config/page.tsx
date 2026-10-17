@@ -1,11 +1,11 @@
 import Link from "next/link";
 
 import { alternarAcesso, criarUsuario, revogarSessoes, trocarMinhaSenha } from "@/actions/auth";
-import { FormNovoUsuario, FormTrocaSenha } from "@/components/forms/FormNovoUsuario";
+import { FormNovoUsuario, FormPermissoes, FormTrocaSenha } from "@/components/forms/FormNovoUsuario";
 import { Icone } from "@/components/Icone";
 import { PainelSeguranca } from "@/components/PainelSeguranca";
 import { db } from "@/db";
-import { servicos, usuarios } from "@/db/schema";
+import { servicos, usuarios, papelAdmin } from "@/db/schema";
 import { requireUsuario } from "@/lib/auth";
 import { ehAdmin, rotuloPapel } from "@/lib/papeis";
 import { formatarData } from "@/lib/dates";
@@ -129,6 +129,43 @@ export default async function PaginaConfig() {
               ))}
             </tbody>
           </table>
+
+          {/*
+            Permissões em linha própria, abaixo da tabela: a lista de
+            seções de cada pessoa é longa demais para caber numa coluna e
+            esconder por `<details>` faria a Layane clicar em cada
+            acesso para descobrir o que aquela pessoa enxerga.
+          */}
+          <div className="mt-6 border-t border-line pt-5">
+            <p className="label mb-1">Permissões por acesso</p>
+            <p className="mb-4 text-[0.8125rem] leading-relaxed text-muted">
+              Administradora tem todas as seções, sempre. Para cada
+              assistente, marque exatamente o que a pessoa pode usar.
+            </p>
+
+            <div className="flex flex-col gap-5">
+              {listaUsuarios
+                .filter((u) => u.id !== eu.id && u.papel !== papelAdmin)
+                .map((u) => (
+                  <div
+                    key={u.id}
+                    className="rounded-xl border border-line bg-deep/30 p-4"
+                  >
+                    <p className="mb-3 text-[0.9375rem] font-500">
+                      {u.nome}
+                      <span className="ml-2 text-[0.8125rem] font-400 text-muted">
+                        {u.email}
+                      </span>
+                    </p>
+                    <FormPermissoes
+                      usuarioId={u.id}
+                      nome={u.nome}
+                      permissoes={u.permissoes ?? []}
+                    />
+                  </div>
+                ))}
+            </div>
+          </div>
 
           <div className="mt-6 border-t border-line pt-5">
             <p className="label mb-3">Dar novo acesso</p>

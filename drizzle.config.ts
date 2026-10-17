@@ -3,9 +3,10 @@ import { defineConfig } from "drizzle-kit";
 export default defineConfig({
   schema: "./src/db/schema.ts",
   out: "./src/db/migrations",
-  dialect: "turso",
+  dialect: "postgresql",
   dbCredentials: {
-    url: process.env.DATABASE_URL ?? "file:./data/layane.db",
-    authToken: process.env.DATABASE_AUTH_TOKEN,
+    url:
+      process.env.DATABASE_URL ??
+      "postgresql://postgres:postgres@localhost:5432/postgres",
   },
 });

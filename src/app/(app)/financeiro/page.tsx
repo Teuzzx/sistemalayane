@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { exigirSecao } from "@/lib/exigir";
 
 import { FormBaixa } from "@/components/forms/FormBaixa";
 import { FormDespesa, FormLancamento } from "@/components/forms/FormFinanceiro";
@@ -45,6 +46,8 @@ export default async function PaginaFinanceiro({
     despesa?: string;
   }>;
 }) {
+  await exigirSecao("financeiro");
+
   const { ano, status, clienteId, novo, baixa, despesa } = await searchParams;
 
   const anos = await anosComMovimento();

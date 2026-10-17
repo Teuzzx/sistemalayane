@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "
 
 import { Icone, type NomeIcone } from "./Icone";
 import { sair } from "@/actions/auth";
-import { ehAdmin, rotuloPapel } from "@/lib/papeis";
+import { ehAdmin, podeAcessar, rotuloPapel, type Secao } from "@/lib/permissoes";
 import type { Usuario } from "@/db/schema";
 import { iniciais } from "@/lib/utils";
 
@@ -56,6 +56,8 @@ type Item = {
   rotulo: string;
   icone: NomeIcone;
   admin?: boolean;
+  /** Se��o que esta rota exige. Vazio = acess�vel a qualquer acesso. */
+  secao?: Secao;
   /** Badge de trabalho pendente — só o que exige ação, nunca contagem total. */
   contagem?: number;
   tom?: "perigo" | "atencao";
@@ -73,26 +75,39 @@ const GRUPOS: { titulo: string; itens: Item[] }[] = [
     titulo: "Operação",
     itens: [
       { href: "/painel", rotulo: "Painel", icone: "painel" },
-      { href: "/clientes", rotulo: "Clientes", icone: "clientes" },
-      { href: "/demandas", rotulo: "Demandas", icone: "demandas" },
-      { href: "/documentos", rotulo: "Documentos", icone: "documentos", tom: "atencao" },
+      { href: "/clientes", rotulo: "Clientes", icone: "clientes", secao: "clientes" },
+      { href: "/demandas", rotulo: "Demandas", icone: "demandas", secao: "demandas" },
+      {
+        href: "/documentos",
+        rotulo: "Documentos",
+        icone: "documentos",
+        secao: "documentos",
+        tom: "atencao",
+      },
     ],
   },
   {
     titulo: "Comercial",
     itens: [
-      { href: "/orcamentos", rotulo: "Orçamentos", icone: "orcamentos" },
-      { href: "/contratos", rotulo: "Contratos", icone: "contratos" },
+      { href: "/orcamentos", rotulo: "Orçamentos", icone: "orcamentos", secao: "orcamentos" },
+      { href: "/contratos", rotulo: "Contratos", icone: "contratos", secao: "contratos" },
     ],
   },
   {
     titulo: "Caixa",
     itens: [
-      { href: "/financeiro", rotulo: "Financeiro", icone: "financeiro", tom: "atencao" },
+      {
+        href: "/financeiro",
+        rotulo: "Financeiro",
+        icone: "financeiro",
+        secao: "financeiro",
+        tom: "atencao",
+      },
       {
         href: "/mensagens",
         rotulo: "Mensagens",
         icone: "email",
+        secao: "mensagens",
         tom: "atencao",
       },
     ],
@@ -104,9 +119,17 @@ const GRUPOS: { titulo: string; itens: Item[] }[] = [
         href: "/conformidade",
         rotulo: "Conformidade",
         icone: "conformidade",
-        admin: true,
+        secao: "conformidade",
       },
-      { href: "/config", rotulo: "Configurações", icone: "config", admin: true },
+      /*
+       * Sem `admin: true` de propósito. A página esconde quem tem
+       * acesso, o formulário de novo usuário e o log de segurança para
+       * quem não é administradora — mas a troca da PRÓPRIA senha é de
+       * qualquer pessoa. Esconder o link inteiro deixava a assistente
+       * sem nenhum caminho para trocar a senha que ela mesma escolheu,
+       * porque só a tela de configurações tem esse formulário.
+       */
+      { href: "/config", rotulo: "Configurações", icone: "config" },
     ],
   },
 ];
@@ -176,7 +199,11 @@ export function Navegacao({
 
   const visiveis = GRUPOS.map((g) => ({
     ...g,
-    itens: g.itens.filter((i) => !i.admin || ehAdmin(usuario)),
+    itens: g.itens.filter(
+      (i) =>
+        (!i.admin || ehAdmin(usuario)) &&
+        (!i.secao || ehAdmin(usuario) || podeAcessar(usuario, i.secao)),
+    ),
   })).filter((g) => g.itens.length > 0);
 
   const itemAtivo = (href: string) =>

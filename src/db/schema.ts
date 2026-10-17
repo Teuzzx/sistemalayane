@@ -11,11 +11,13 @@
 
 import { sql } from "drizzle-orm";
 import {
+  boolean,
   integer,
-  sqliteTable,
+  jsonb,
+  pgTable,
   text,
   uniqueIndex,
-} from "drizzle-orm/sqlite-core";
+} from "drizzle-orm/pg-core";
 import type { InferSelectModel } from "drizzle-orm";
 
 /* ------------------------------------------------------------------ */
@@ -29,7 +31,18 @@ export const centavos = (name: string) =>
 /** `YYYY-MM-DD`. */
 export const data = (name: string) => text(name);
 
-const agora = () => sql`(strftime('%Y-%m-%dT%H:%M:%fZ','now'))`;
+/**
+ * Carimbo de momento, em ISO 8601 com milissegundos — `2026-10-16T21:54:08.123Z`.
+ *
+ * Continua sendo `text`, não `timestamp`: o projeto inteiro compara e
+ * formata esses campos como string, e mudar para coluna de tempo
+ * mexeria em cada uma dessas leituras. O formato UTC com `Z` é o que
+ * faz a comparação por ordenação de texto funcionar igual à do SQLite —
+ * por isso o `to_char` com o fuso explicitamente travado em UTC, e não
+ * um `now()` cru que traria o fuso da sessão do Postgres.
+ */
+const agora = () =>
+  sql`to_char(now() at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"')`;
 
 /* ------------------------------------------------------------------ */
 /* Acesso                                                              */
@@ -40,7 +53,7 @@ export const papelAdmin = "admin";
 export const papelAssistente = "assistente";
 export type Papel = typeof papelAdmin | typeof papelAssistente;
 
-export const usuarios = sqliteTable(
+export const usuarios = pgTable(
   "usuarios",
   {
     id: text("id").primaryKey(),
@@ -53,7 +66,12 @@ export const usuarios = sqliteTable(
       .notNull()
       .default(papelAssistente),
     cargo: text("cargo"),
-    ativo: integer("ativo", { mode: "boolean" }).notNull().default(true),
+    ativo: boolean("ativo").notNull().default(true),
+    /**
+     * Seções que este acesso pode usar. Ignorado para `admin`, que tem
+     * tudo — o campo existe para o recorte do assistente.
+     */
+    permissoes: jsonb("permissoes").$type<string[]>().notNull().default([]),
     ultimoAcessoEm: text("ultimo_acesso_em"),
     criadoEm: text("criado_em").notNull().default(agora()),
   },
@@ -114,7 +132,7 @@ export type StatusEnvio = (typeof statusEnvio)[number];
  * o que a Layane pediu ao dizer que queria "receber e-mails" — não ver a
  * caixa dela, mas ter a conversa no sistema onde ela trabalha.
  */
-export const mensagens = sqliteTable("mensagens", {
+export const mensagens = pgTable("mensagens", {
   id: text("id").primaryKey(),
   /** Agrupa a conversa. Uma mensagem e suas respostas compartilham. */
   threadId: text("thread_id").notNull(),
@@ -159,18 +177,18 @@ export const mensagens = sqliteTable("mensagens", {
 });
 
 /** Modelo de texto — o que a Layane edita uma vez e reusa. */
-export const modelosEmail = sqliteTable("modelos_email", {
+export const modelosEmail = pgTable("modelos_email", {
   id: text("id").primaryKey(),
   tipo: text("tipo", { enum: mensagemTipo }).notNull(),
   nome: text("nome").notNull(),
   assunto: text("assunto").notNull(),
   corpo: text("corpo").notNull(),
   /** Placeholders aceitos, só para a Layane saber o que pode usar. */
-  variaveis: text("variaveis", { mode: "json" })
+  variaveis: jsonb("variaveis")
     .$type<string[]>()
     .notNull()
     .default([]),
-  ativo: integer("ativo", { mode: "boolean" }).notNull().default(true),
+  ativo: boolean("ativo").notNull().default(true),
   criadoEm: text("criado_em").notNull().default(agora()),
   atualizadoEm: text("atualizado_em").notNull().default(agora()),
 });
@@ -182,17 +200,17 @@ export const modelosEmail = sqliteTable("modelos_email", {
  * alguém está tentando entrar. Um login bem-sucedido invalida as falhas
  * anteriores daquele e-mail.
  */
-export const tentativasLogin = sqliteTable("tentativas_login", {
+export const tentativasLogin = pgTable("tentativas_login", {
   id: text("id").primaryKey(),
   /** E-mail digitado (normalizado em minúsculas). */
   email: text("email").notNull(),
   ip: text("ip"),
-  sucesso: integer("sucesso", { mode: "boolean" }).notNull().default(false),
+  sucesso: boolean("sucesso").notNull().default(false),
   motivo: text("motivo"),
   criadoEm: text("criado_em").notNull().default(agora()),
 });
 
-export const sessoes = sqliteTable(
+export const sessoes = pgTable(
   "sessoes",
   {
     id: text("id").primaryKey(),
@@ -218,7 +236,7 @@ export const clienteStatus = [
 ] as const;
 export type ClienteStatus = (typeof clienteStatus)[number];
 
-export const clientes = sqliteTable("clientes", {
+export const clientes = pgTable("clientes", {
   id: text("id").primaryKey(),
   /** Razão social ou nome do cliente. */
   nome: text("nome").notNull(),
@@ -228,7 +246,7 @@ export const clientes = sqliteTable("clientes", {
   /** PF: documento. */
   cpf: text("cpf"),
   /** Empresa é do setor público? Muda prazos e forma de contrato. */
-  setorPublico: integer("setor_publico", { mode: "boolean" })
+  setorPublico: boolean("setor_publico")
     .notNull()
     .default(false),
 
@@ -266,14 +284,14 @@ export const clientes = sqliteTable("clientes", {
  * orçamento (item), contrato (escopo) e dashboard (mix de faturamento).
  * Preço em centavos.
  */
-export const servicos = sqliteTable("servicos", {
+export const servicos = pgTable("servicos", {
   id: text("id").primaryKey(),
   nome: text("nome").notNull(),
   descricao: text("descricao"),
   precoPadrao: centavos("preco_padrao"),
   /** `projeto` | `mensal` | `hora` | `licao` — muda como o preço é lido. */
   unidade: text("unidade").notNull().default("projeto"),
-  ativo: integer("ativo", { mode: "boolean" }).notNull().default(true),
+  ativo: boolean("ativo").notNull().default(true),
   criadoEm: text("criado_em").notNull().default(agora()),
 });
 
@@ -297,7 +315,7 @@ export const demandaStatus = [
 ] as const;
 export type DemandaStatus = (typeof demandaStatus)[number];
 
-export const demandas = sqliteTable("demandas", {
+export const demandas = pgTable("demandas", {
   id: text("id").primaryKey(),
   clienteId: text("cliente_id")
     .notNull()
@@ -340,7 +358,7 @@ export const atendimentoTipo = [
 ] as const;
 export type AtendimentoTipo = (typeof atendimentoTipo)[number];
 
-export const atendimentos = sqliteTable("atendimentos", {
+export const atendimentos = pgTable("atendimentos", {
   id: text("id").primaryKey(),
   clienteId: text("cliente_id")
     .notNull()
@@ -371,7 +389,7 @@ export const documentoStatus = [
 ] as const;
 export type DocumentoStatus = (typeof documentoStatus)[number];
 
-export const documentos = sqliteTable("documentos", {
+export const documentos = pgTable("documentos", {
   id: text("id").primaryKey(),
   clienteId: text("cliente_id")
     .notNull()
@@ -417,7 +435,7 @@ export type OrcamentoItem = {
   valorUnitario: number;
 };
 
-export const orcamentos = sqliteTable("orcamentos", {
+export const orcamentos = pgTable("orcamentos", {
   id: text("id").primaryKey(),
   clienteId: text("cliente_id")
     .notNull()
@@ -429,7 +447,7 @@ export const orcamentos = sqliteTable("orcamentos", {
     .notNull()
     .default("rascunho"),
 
-  itens: text("itens", { mode: "json" }).$type<OrcamentoItem[]>().notNull(),
+  itens: jsonb("itens").$type<OrcamentoItem[]>().notNull(),
 
   subtotal: centavos("subtotal"),
   /** Desconto em centavos — é o "meu desconto" que a Layane mencionou. */
@@ -466,7 +484,7 @@ export const contratoStatus = [
 ] as const;
 export type ContratoStatus = (typeof contratoStatus)[number];
 
-export const contratos = sqliteTable("contratos", {
+export const contratos = pgTable("contratos", {
   id: text("id").primaryKey(),
   clienteId: text("cliente_id")
     .notNull()
@@ -533,7 +551,7 @@ export type LancamentoStatus = (typeof lancamentoStatus)[number];
  * caminho vira um `pagamento` negativo do tipo `desconto` — assim o histórico
  * não mente sobre o que foi realmente cobrado.
  */
-export const lancamentos = sqliteTable("lancamentos", {
+export const lancamentos = pgTable("lancamentos", {
   id: text("id").primaryKey(),
   clienteId: text("cliente_id")
     .notNull()
@@ -562,7 +580,7 @@ export const lancamentos = sqliteTable("lancamentos", {
 });
 
 /** Baixa de um lançamento. `desconto` entra como valor negativo. */
-export const pagamentos = sqliteTable("pagamentos", {
+export const pagamentos = pgTable("pagamentos", {
   id: text("id").primaryKey(),
   lancamentoId: text("lancamento_id")
     .notNull()
@@ -587,7 +605,7 @@ export const pagamentos = sqliteTable("pagamentos", {
 });
 
 /** Despesas da operação — o "quanto entrou e quanto saiu" completo. */
-export const despesas = sqliteTable("despesas", {
+export const despesas = pgTable("despesas", {
   id: text("id").primaryKey(),
   descricao: text("descricao").notNull(),
   categoria: text("categoria"),
@@ -656,23 +674,23 @@ export type ModeloConformidade = {
 };
 
 /** Modelo de questionário — a Layane cria/edita quantos quiser. */
-export const modelosConformidade = sqliteTable("modelos_conformidade", {
+export const modelosConformidade = pgTable("modelos_conformidade", {
   id: text("id").primaryKey(),
   nome: text("nome").notNull(),
   descricao: text("descricao"),
   /** Versão do questionário (ex.: "2026.1") — permite histórico. */
   versao: text("versao").notNull().default("1.0"),
-  modelo: text("modelo", { mode: "json" })
+  modelo: jsonb("modelo")
     .$type<ModeloConformidade>()
     .notNull(),
-  ativo: integer("ativo", { mode: "boolean" }).notNull().default(true),
+  ativo: boolean("ativo").notNull().default(true),
   criadoEm: text("criado_em").notNull().default(agora()),
   atualizadoEm: text("atualizado_em").notNull().default(agora()),
   criadoPor: text("criado_por").references(() => usuarios.id),
 });
 
 /** Uma aplicação do questionário a um cliente. */
-export const analisesConformidade = sqliteTable("analises_conformidade", {
+export const analisesConformidade = pgTable("analises_conformidade", {
   id: text("id").primaryKey(),
   clienteId: text("cliente_id")
     .notNull()
@@ -685,12 +703,12 @@ export const analisesConformidade = sqliteTable("analises_conformidade", {
     .notNull()
     .default("rascunho"),
   /** Mapa `idDaPergunta -> Resposta`. */
-  respostas: text("respostas", { mode: "json" })
+  respostas: jsonb("respostas")
     .$type<Record<string, Resposta>>()
     .notNull()
     .default({}),
   /** Snapshot do modelo no momento da emissão — o parecer não muda depois. */
-  modeloAplicado: text("modelo_aplicado", { mode: "json" }).$type<ModeloConformidade>(),
+  modeloAplicado: jsonb("modelo_aplicado").$type<ModeloConformidade>(),
   /** Conclusão escrita pela Layane, que entra no parecer. */
   parecer: text("parecer"),
   /** Recomendações practices, uma por linha. */
@@ -707,14 +725,14 @@ export const analisesConformidade = sqliteTable("analises_conformidade", {
 /* Configurações / auditoria                                           */
 /* ------------------------------------------------------------------ */
 
-export const configuracoes = sqliteTable("configuracoes", {
+export const configuracoes = pgTable("configuracoes", {
   chave: text("chave").primaryKey(),
   valor: text("valor"),
   atualizadoEm: text("atualizado_em").notNull().default(agora()),
 });
 
 /** Trilha de auditoria — quem mexeu em quê. */
-export const auditoria = sqliteTable("auditoria", {
+export const auditoria = pgTable("auditoria", {
   id: text("id").primaryKey(),
   usuarioId: text("usuario_id").references(() => usuarios.id),
   acao: text("acao").notNull(),

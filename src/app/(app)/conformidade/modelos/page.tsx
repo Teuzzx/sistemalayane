@@ -1,4 +1,5 @@
 import { desc } from "drizzle-orm";
+import { exigirSecao } from "@/lib/exigir";
 
 import { alternarModelo, duplicarModelo, obterModelo } from "@/actions/conformidade";
 import { requireAdmin } from "@/lib/auth";
@@ -20,7 +21,7 @@ export default async function PaginaModelos({
 }: {
   searchParams: Promise<{ editar?: string }>;
 }) {
-  await requireAdmin();
+  await exigirSecao("conformidade");
   const { editar } = await searchParams;
 
   const modelos = await db

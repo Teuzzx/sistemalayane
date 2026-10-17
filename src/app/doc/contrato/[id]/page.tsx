@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { eq } from "drizzle-orm";
+import { exigirSecao } from "@/lib/exigir";
 
 import { DocContrato } from "@/components/docs/DocContrato";
 import { db } from "@/db";
@@ -13,6 +14,8 @@ export default async function PaginaDocContrato({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await exigirSecao("contratos");
+
   const { id } = await params;
   const dados = await detalheContrato(id);
   if (!dados) notFound();

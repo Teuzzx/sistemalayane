@@ -15,6 +15,7 @@
  */
 
 import { Suspense } from "react";
+import { exigirSecao } from "@/lib/exigir";
 
 import { FormularioMensagem } from "@/components/FormularioMensagem";
 import { PainelCobranca } from "@/components/PainelCobranca";
@@ -73,6 +74,8 @@ export default async function PaginaMensagens({
 }: {
   searchParams: Promise<{ status?: string; tipo?: string }>;
 }) {
+  await exigirSecao("mensagens");
+
   const usuario = await requireUsuario();
   const params = await searchParams;
 

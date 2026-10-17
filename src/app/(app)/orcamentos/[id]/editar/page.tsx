@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { exigirSecao } from "@/lib/exigir";
 
 import { FormOrcamento } from "@/components/forms/FormOrcamento";
 import { Icone } from "@/components/Icone";
@@ -11,6 +12,8 @@ export default async function PaginaEditarOrcamento({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await exigirSecao("orcamentos");
+
   const { id } = await params;
   const dados = await detalheOrcamento(id);
   if (!dados) notFound();

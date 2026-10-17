@@ -51,7 +51,7 @@ import {
   rotuloMesChave,
   somaDias,
 } from "@/lib/dates";
-import { normalizar } from "@/lib/utils";
+import { semAcento } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
 /* Tipos de apoio                                                      */
@@ -352,13 +352,19 @@ export async function listarClientes(filtros: {
   const condicoes = [];
 
   if (filtros.busca) {
-    const alvo = `%${normalizar(filtros.busca)}%`;
+    const alvo = `%${filtros.busca.toLowerCase()}%`;
+    /* `unaccent` + `lower` no banco, e não o `normalizar()` do JS: passar
+       a coluna por uma função JS dentro do template `sql` faz o Drizzle
+       tratar o RESULTADO como parâmetro — a consulta virava
+       `where ($1 like $2)` com a string `'[object object]'` no lugar da
+       coluna, e a busca não retornava nada. A remoção de acento precisa
+       acontecer no Postgres, onde a coluna continua sendo a coluna. */
     condicoes.push(
-      sql`(${normalizar(clientes.nome)} like ${alvo}
-        or ${normalizar(clientes.nomeFantasia)} like ${alvo}
-        or ${normalizar(clientes.cidade)} like ${alvo}
-        or ${normalizar(clientes.contatoNome)} like ${alvo}
-        or ${normalizar(clientes.cnpj)} like ${alvo})`,
+      sql`(${semAcento(clientes.nome)} like ${alvo}
+        or ${semAcento(clientes.nomeFantasia)} like ${alvo}
+        or ${semAcento(clientes.cidade)} like ${alvo}
+        or ${semAcento(clientes.contatoNome)} like ${alvo}
+        or ${semAcento(clientes.cnpj)} like ${alvo})`,
     );
   }
 
@@ -619,7 +625,7 @@ export async function listarDocumentos(filtros: {
   if (filtros.clienteId) condicoes.push(eq(documentos.clienteId, filtros.clienteId));
   if (filtros.texto) {
     condicoes.push(
-      sql`${normalizar(documentos.nome)} like ${`%${normalizar(filtros.texto)}%`}`,
+      sql`${semAcento(documentos.nome)} like ${`%${filtros.texto.toLowerCase()}%`}`,
     );
   }
 
@@ -681,7 +687,7 @@ export async function listarLancamentos(filtros: {
 
   if (filtros.ano && filtros.ano !== "todos") {
     condicoes.push(
-      sql`(substr(${lancamentos.vencimento}, 1, 4) = ${filtros.ano})`,
+      sql`(substring(${lancamentos.vencimento}, 1, 4) = ${filtros.ano})`,
     );
   }
   if (filtros.status && filtros.status !== "todos") {
@@ -853,9 +859,9 @@ export async function opcoesServicos() {
 /** Anos com movimento financeiro — alimenta o filtro "faturei no ano". */
 export async function anosComMovimento(): Promise<number[]> {
   const linhas = await db
-    .select({ ano: sql<string>`substr(${pagamentos.data}, 1, 4)` })
+    .select({ ano: sql<string>`substring(${pagamentos.data}, 1, 4)` })
     .from(pagamentos)
-    .groupBy(sql`substr(${pagamentos.data}, 1, 4)`);
+    .groupBy(sql`substring(${pagamentos.data}, 1, 4)`);
 
   const anos = linhas
     .map((l) => Number(l.ano))

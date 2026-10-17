@@ -2,7 +2,7 @@
  * Aplica as migrations pendentes. Executar com `npm run db:migrate`.
  */
 
-import { migrate } from "drizzle-orm/libsql/migrator";
+import { migrate } from "drizzle-orm/node-postgres/migrator";
 
 import { db } from "./index";
 

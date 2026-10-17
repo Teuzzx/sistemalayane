@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { exigirSecao } from "@/lib/exigir";
 
 import { FormDemanda } from "@/components/forms/FormDemanda";
 import { Icone } from "@/components/Icone";
@@ -20,6 +21,8 @@ export default async function PaginaDemandas({
 }: {
   searchParams: Promise<{ status?: string; clienteId?: string; novo?: string }>;
 }) {
+  await exigirSecao("demandas");
+
   const { status, clienteId, novo } = await searchParams;
 
   const [demandas, funilDados, clientes, servicos] = await Promise.all([

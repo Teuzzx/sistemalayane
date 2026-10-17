@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { exigirSecao } from "@/lib/exigir";
 
 import { iniciarAnalise, listarModelosAtivos } from "@/actions/conformidade";
 import { Icone } from "@/components/Icone";
@@ -14,7 +15,7 @@ export default async function PaginaNovaAnalise({
 }: {
   searchParams: Promise<{ clienteId?: string }>;
 }) {
-  await requireAdmin();
+  await exigirSecao("conformidade");
   const { clienteId } = await searchParams;
 
   const [clientes, modelos] = await Promise.all([

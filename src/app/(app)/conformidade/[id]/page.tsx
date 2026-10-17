@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { exigirSecao } from "@/lib/exigir";
 
 import { marcarEnviada } from "@/actions/conformidade";
 import { Icone } from "@/components/Icone";
@@ -18,7 +19,7 @@ import {
 } from "@/components/ui";
 
 export default async function PaginaAnalise({ params }: { params: Promise<{ id: string }> }) {
-  await requireAdmin();
+  await exigirSecao("conformidade");
   const { id } = await params;
   const dados = await detalheAnalise(id);
   if (!dados) notFound();

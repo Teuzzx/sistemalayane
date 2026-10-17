@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Barlow_Semi_Condensed } from "next/font/google";
 
+import { BancoNaoConfigurado } from "@/components/BancoNaoConfigurado";
+import { bancoConfigurado } from "@/db";
+
 import "./globals.css";
 
 const barlow = Barlow_Semi_Condensed({
@@ -33,7 +36,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" className={barlow.variable}>
-      <body className="min-h-dvh antialiased">{children}</body>
+      <body className="min-h-dvh antialiased">
+        {/*
+          Sem `DATABASE_URL` toda rota morria — a tela de login, inclusive
+          — e a Vercel devolvia um 500 sem texto nenhum. A pessoa via um
+          número e nenhuma pista do que fazer. Aqui o caso conhecido vira
+          uma tela que diz o que está faltando.
+        */}
+        {bancoConfigurado ? children : <BancoNaoConfigurado />}
+      </body>
     </html>
   );
 }

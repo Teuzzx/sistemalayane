@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { exigirSecao } from "@/lib/exigir";
 
 import { FormContrato } from "@/components/forms/FormContrato";
 import { Icone } from "@/components/Icone";
@@ -11,6 +12,8 @@ export default async function PaginaEditarContrato({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await exigirSecao("contratos");
+
   const { id } = await params;
   const dados = await detalheContrato(id);
   if (!dados) notFound();

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { exigirSecao } from "@/lib/exigir";
 
 import { Icone } from "@/components/Icone";
 import { rotulosStatusOrcamento } from "@/db/schema";
@@ -28,6 +29,8 @@ export default async function PaginaOrcamentos({
 }: {
   searchParams: Promise<{ status?: string }>;
 }) {
+  await exigirSecao("orcamentos");
+
   const { status } = await searchParams;
   const orcamentos = await listarOrcamentos({ status });
 

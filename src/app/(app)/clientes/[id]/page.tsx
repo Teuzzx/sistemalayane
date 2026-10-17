@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { exigirSecao } from "@/lib/exigir";
 
 import {
   arquivarCliente,
@@ -52,6 +53,8 @@ export default async function PaginaCliente({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ aba?: string }>;
 }) {
+  await exigirSecao("clientes");
+
   const { id } = await params;
   const { aba } = await searchParams;
 
