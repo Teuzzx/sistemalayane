@@ -103,6 +103,24 @@ export function prazoRelativo(iso: string | null | undefined): string {
   return `há ${Math.abs(dias)} dias`;
 }
 
+/**
+ * Quantos dias faltam até a data. Negativo = já passou.
+ *
+ * Existe como função própria por dois motivos. Primeiro, a mesma conta
+ * aparecia repetida em três telas (painel, documentos e ficha do
+ * cliente), e o `Date.now()` inline também tropeçava na regra de pureza
+ * do React Compiler. Segundo, passar a data de referência permite
+ * testar sem depender do relógio — e o teste fica estável em qualquer
+ * dia em que rodar.
+ */
+export function diasAte(
+  iso: string | null | undefined,
+  base = hoje(),
+): number | null {
+  if (!iso) return null;
+  return diferencaDias(base, iso);
+}
+
 /** `"2026-03" → "março de 2026"` */
 export function rotuloMesChave(chave: string): string {
   const [y, m] = chave.split("-").map(Number);

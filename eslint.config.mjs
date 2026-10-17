@@ -1,41 +1,28 @@
-import { FlatCompat } from "@eslint/eslintrc";
+import next from "eslint-config-next";
 
 /**
  * Configuração de lint.
  *
- * `next/core-web-vitals` pega o que quebra em produção (uso errado de
- * `useEffect`, `<img>` sem dimensão, hook fora de ordem). As regras de
- * TypeScript ficam desligadas porque `npm run typecheck` já cobre isso —
- * duas ferramentas dando a mesma resposta só geram atrito.
+ * `eslint-config-next` 16 já entrega flat config, então não se usa o
+ * `FlatCompat` — passar o config novo pelo conversor do formato antigo
+ * quebra com "Converting circular structure to JSON".
+ *
+ * Deliberadamente sem overrides: o preset já vem com `core-web-vitals`
+ * (o que quebra em produção) e com as regras de TypeScript. Acrescentar
+ * regra aqui exige declarar o plugin correspondente no mesmo objeto, e
+ * foi exatamente aí que a primeira versão deste arquivo quebrou.
  */
-const compat = new FlatCompat({ baseDirectory: import.meta.dirname });
-
 const config = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...next,
   {
     ignores: [
       "node_modules/**",
       ".next/**",
       "coverage/**",
       "next-env.d.ts",
-      // Gerado pelo drizzle-kit, não é código revisado à mão.
+      // Gerado pelo drizzle-kit, revisado à mão não é.
       "src/db/migrations/**",
     ],
-  },
-  {
-    rules: {
-      // Variável que começa com `_` é declarada de propósito e não
-      // usada — é o caso clássico de destructuring que descarta o
-      // primeiro item. Erro aqui vira `void x` espalhado pelo código.
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
-        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
-      ],
-      // O projeto usa `<a>` para links internos em alguns pontos e
-      // `<Link>` em outros. Forçar uma das formas gera ruído sem
-      // benefício funcional aqui, porque o layout é todo client-side.
-      "@next/next/no-html-link-for-pages": "off",
-    },
   },
 ];
 

@@ -4,7 +4,7 @@ import { FormDocumento } from "@/components/forms/FormDocumento";
 import { Icone } from "@/components/Icone";
 import { marcarDocumento } from "@/actions/demandas";
 import { listarDocumentos, opcoesClientes } from "@/lib/consultas";
-import { formatarData, prazoRelativo } from "@/lib/dates";
+import { diasAte, formatarData, prazoRelativo } from "@/lib/dates";
 import {
   CabecalhoPagina,
   Etiqueta,
@@ -155,11 +155,7 @@ export default async function PaginaDocumentos({
               </thead>
               <tbody>
                 {documentos.map((d) => {
-                  const dias = d.validade
-                    ? Math.round(
-                        (new Date(d.validade).getTime() - Date.now()) / 86_400_000,
-                      )
-                    : null;
+                  const dias = diasAte(d.validade);
 
                   return (
                     <tr key={d.id}>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import { Icone, type NomeIcone } from "./Icone";
 import { sair } from "@/actions/auth";
@@ -11,6 +11,45 @@ import type { Usuario } from "@/db/schema";
 import { iniciais } from "@/lib/utils";
 
 const CHAVE = "layane.lateral";
+
+/* ------------------------------------------------------------------ */
+/* Preferência da largura da barra                                      */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Fonte da verdade para `useSyncExternalStore`.
+ *
+ * `lerRecolhida` devolve string, não booleano: o contrato da API exige
+ * que o snapshot seja referencialmente estável, e converter em objeto
+ * novo a cada leitura faria o React re-renderizar em laço.
+ */
+function lerRecolhida(): string {
+  if (typeof window === "undefined") return "0";
+  return localStorage.getItem(CHAVE) ?? "0";
+}
+
+/** Snapshot do servidor. Tem que devolver o MESMO tipo do cliente. */
+function semRecolhida(): string {
+  return "0";
+}
+
+const ouvintes = new Set<() => void>();
+
+function assinarRecolhida(ouvinte: () => void): () => void {
+  ouvintes.add(ouvinte);
+  /* `storage` dispara quando OUTRA aba muda a preferência. O evento
+     próprio dispara quando é a MESMA aba — sem ele, clicar no botão
+     de recolher não atualizaria a store. */
+  window.addEventListener("storage", ouvinte);
+  return () => {
+    ouvintes.delete(ouvinte);
+    window.removeEventListener("storage", ouvinte);
+  };
+}
+
+function notifyRecolhida(): void {
+  for (const o of ouvintes) o();
+}
 
 type Item = {
   href: string;
@@ -79,29 +118,45 @@ export function Navegacao({
   usuario: Usuario;
   contagens?: Record<string, { n: number; tom: "perigo" | "atencao" }>;
 }) {
-  const [recolhida, setRecolhida] = useState(false);
   const [gaveta, setGaveta] = useState(false);
   const caminho = usePathname();
 
-  /* O estado vive no <html> porque o conteúdo fora do layout também
-     precisa saber a largura da barra. E persiste — quem recolhe uma vez
-     não quer recolher toda sessão. */
+  /*
+   * Largura da barra vem do `localStorage`, com `useSyncExternalStore`
+   * em vez de `useState` + `useEffect`.
+   *
+   * A versão com efeito rodava dois passes: renderizava com `false`,
+   * lia o storage, e disparava um segundo render. Em toda montagem —
+   * e a barra fica no layout, então monta uma vez — a página inteira
+   * era desenhada duas vezes. Era uma das origens do "demora pra abrir
+   * as abas".
+   *
+   * `useSyncExternalStore` resolve os dois problemas de uma vez: o
+   * servidor renderiza `false`, o cliente assume o valor salvo na
+   * hidratação sem passe extra, e o atributo no `<html>` continua
+   * disponível para o CSS.
+   */
+  const recolhida =
+    useSyncExternalStore(assinarRecolhida, lerRecolhida, semRecolhida) === "1";
+
+  /* O atributo no `<html>` é o que o CSS do grid lê. Vai em efeito de
+     propósito: escrever no DOM é literalmente o caso que efeito existe
+     para ("atualizar sistema externo com o estado mais recente"), e não
+     há estado do React envolvido — logo, sem render em cascata. */
   useEffect(() => {
-    const salva = localStorage.getItem(CHAVE) === "1";
-    setRecolhida(salva);
-    document.documentElement.dataset.recolhida = String(salva);
-  }, []);
+    document.documentElement.dataset.recolhida = String(recolhida);
+  }, [recolhida]);
 
   const alternar = useCallback(() => {
-    setRecolhida((v) => {
-      const novo = !v;
-      document.documentElement.dataset.recolhida = String(novo);
-      localStorage.setItem(CHAVE, novo ? "1" : "0");
-      return novo;
-    });
+    const novo = lerRecolhida() !== "1";
+    localStorage.setItem(CHAVE, novo ? "1" : "0");
+    notifyRecolhida();
   }, []);
 
-  useEffect(() => setGaveta(false), [caminho]);
+  /* A gaveta fecha no clique do link, não num efeito que observa a
+     rota. Sincronizar estado com a URL por efeito dispara um render
+     extra a cada navegação; fechar na origem do gesto não custa nada. */
+  const fecharGaveta = useCallback(() => setGaveta(false), []);
 
   // Esc fecha a gaveta no mobile.
   useEffect(() => {
@@ -213,6 +268,7 @@ export function Navegacao({
             grupos={visiveis}
             itemAtivo={itemAtivo}
             contagens={contagens}
+            aoNavegar={fecharGaveta}
           />
         </nav>
 
@@ -252,10 +308,13 @@ function ListaGrupos({
   grupos,
   itemAtivo,
   contagens,
+  aoNavegar,
 }: {
   grupos: { titulo: string; itens: Item[] }[];
   itemAtivo: (href: string) => boolean;
   contagens?: Record<string, { n: number; tom: "perigo" | "atencao" }>;
+  /** Fecha a gaveta do mobile ao tocar num link. */
+  aoNavegar?: () => void;
 }) {
   return (
     <ul className="lateral__grupos flex flex-col gap-3">
@@ -273,6 +332,7 @@ function ListaGrupos({
                 <li key={item.href} className="relative">
                   <Link
                     href={item.href}
+                    onClick={aoNavegar}
                     aria-current={ativo ? "page" : undefined}
                     className="lateral__item"
                   >

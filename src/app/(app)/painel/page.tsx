@@ -11,7 +11,7 @@ import {
   serieMensal,
   topClientes,
 } from "@/lib/consultas";
-import { formatarData, prazoRelativo } from "@/lib/dates";
+import { diasAte, formatarData, prazoRelativo } from "@/lib/dates";
 import { brl, brlCompacto } from "@/lib/money";
 import { BarraSituacao, Barras, Funil } from "@/components/Graficos";
 import { Icone } from "@/components/Icone";
@@ -228,11 +228,7 @@ export default async function PaginaPainel({
           ) : (
             <ul>
               {docs.map((d) => {
-                const dias = d.validade
-                  ? Math.round(
-                      (new Date(d.validade).getTime() - Date.now()) / 86_400_000,
-                    )
-                  : null;
+                const dias = diasAte(d.validade);
                 return (
                   <li
                     key={d.id}
